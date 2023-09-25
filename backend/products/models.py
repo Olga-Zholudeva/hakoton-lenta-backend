@@ -7,6 +7,7 @@ class Sku(models.Model):
         primary_key=True,
         max_length=200,
         verbose_name='Товар',
+        db_index=True,
     )
     pr_group_id = models.CharField(
         max_length=200,
@@ -29,6 +30,7 @@ class Store(models.Model):
         primary_key=True,
         max_length=200,
         verbose_name='магазин',
+        db_index=True,
     )
     st_city_id = models.CharField(
         max_length=200,
@@ -44,41 +46,23 @@ class Store(models.Model):
     st_is_active = models.IntegerField(verbose_name='активность',)
 
 
-class StoreSku(models.Model):
-    '''Магазин-товар'''
+class ForecastSku(models.Model):
+    '''Дата прогноза'''
     st_id = models.ForeignKey(
         Store,
         on_delete=models.CASCADE,
-        related_name='store',
+        related_name='forecast_store',
         verbose_name='магазин',
     )
     pr_sku_id = models.ForeignKey(
         Sku,
         on_delete=models.CASCADE,
-        related_name='sku',
+        related_name='forecast_sku',
         verbose_name='товар',
-    )
-
-    class Meta:
-        ordering = ('pr_sku_id',)
-        verbose_name = 'магазин-товар'
-
-    def __str__(self):
-        return f'{self.pr_sku_id} в {self.st_id}'
-
-
-class ForecastSku(models.Model):
-    '''Дата прогноза'''
-    store_sku_id = models.ForeignKey(
-        StoreSku,
-        on_delete=models.CASCADE,
-        related_name='store_sku',
-        verbose_name='магазин-товар',
     )
     forecast_date = models.DateTimeField(verbose_name='Дата прогноза',)
 
     class Meta:
-        ordering = ('-forecast_date',)
         verbose_name = 'прогноз'
         verbose_name_plural = 'прогнозы'
 
@@ -106,17 +90,24 @@ class Forecast(models.Model):
 
 class Sales(models.Model):
     '''Продажи факт'''
-    sales_sku_id = models.ForeignKey(
-        StoreSku,
+    st_id = models.ForeignKey(
+        Store,
         on_delete=models.CASCADE,
-        related_name='sales',
+        related_name='sales_store',
+        verbose_name='магазин',
+    )
+    pr_sku_id = models.ForeignKey(
+        Sku,
+        on_delete=models.CASCADE,
+        related_name='sales_sku',
+        verbose_name='товар',
     )
     date = models.DateTimeField(verbose_name='дата прогноза',)
     sales_type = models.IntegerField(verbose_name='тип продаж',)
     sales_units = models.IntegerField(verbose_name='всего шт',)
     sales_units_promo = models.IntegerField(verbose_name='промо шт',)
-    sales_rub = models.FloatField(verbose_name='всего руб',)
-    sales_run_promo = models.FloatField(verbose_name='промо руб',)
+    sales_rub = models.DecimalField(verbose_name='всего руб',)
+    sales_run_promo = models.DecimalField(verbose_name='промо руб',)
 
     class Meta:
         ordering = ('-date',)
