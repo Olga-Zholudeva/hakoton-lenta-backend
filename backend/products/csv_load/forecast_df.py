@@ -1,15 +1,23 @@
+import os
+import sys
 import csv
 from datetime import datetime
 
-from products.models import ForecastSku, Forecast
-from products.setup_logger import setup_logger
+
+current = os.path.dirname(os.path.realpath(__file__))
+parent = os.path.dirname(current)
+sys.path.append(parent)
+
+
+from backend.products.models import ForecastSku, Forecast
+from backend.products.setup_logger import setup_logger
 
 
 logger = setup_logger()
 
 
 def main()
-    with open('products/data/sales_submission.csv', encoding='utf-8') as f:
+    with open('backend/products/data/sales_submission.csv', encoding='utf-8') as f:
         reader = csv.reader(f)
         count = 0
         for row in reader:
