@@ -66,14 +66,15 @@ class ForecastSku(models.Model):
         verbose_name = 'прогноз'
         verbose_name_plural = 'прогнозы'
 
-    def __str__(self):
-        return f'''Прогноз для {self.store_sku_id} на {self.forecast_date}'''
-
 
 class Forecast(models.Model):
     '''Прогнозы'''
     date = models.DateField(verbose_name='дата прогноза',)
-    target = models.IntegerField(verbose_name='цель',)
+    target = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        verbose_name='цель',
+    )
     forecast_sku_id = models.ForeignKey(
         ForecastSku,
         on_delete=models.CASCADE,
@@ -82,10 +83,6 @@ class Forecast(models.Model):
 
     class Meta:
         ordering = ('-date',)
-
-    def __str__(self):
-        return f'''Прогноз для {self.forecast_sku_id}
-                   на {self.date}'''
 
 
 class Sales(models.Model):
@@ -127,6 +124,3 @@ class Sales(models.Model):
 
     class Meta:
         ordering = ('-date',)
-
-    def __str__(self):
-        return f'Факт продаж для {self.sales_sku_id} на {self.date}'
