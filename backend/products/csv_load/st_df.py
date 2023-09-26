@@ -1,5 +1,4 @@
 import csv
-import logging
 
 from products.models import Store
 from products.setup_logger import setup_logger
