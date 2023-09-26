@@ -60,7 +60,7 @@ class ForecastSku(models.Model):
         related_name='forecast_sku',
         verbose_name='товар',
     )
-    forecast_date = models.DateTimeField(verbose_name='Дата прогноза',)
+    forecast_date = models.DateField(verbose_name='дата прогноза',)
 
     class Meta:
         verbose_name = 'прогноз'
@@ -72,7 +72,7 @@ class ForecastSku(models.Model):
 
 class Forecast(models.Model):
     '''Прогнозы'''
-    date = models.DateTimeField(verbose_name='дата прогноза',)
+    date = models.DateField(verbose_name='дата прогноза',)
     target = models.IntegerField(verbose_name='цель',)
     forecast_sku_id = models.ForeignKey(
         ForecastSku,
@@ -102,17 +102,25 @@ class Sales(models.Model):
         related_name='sales_sku',
         verbose_name='товар',
     )
-    date = models.DateTimeField(verbose_name='дата прогноза',)
+    date = models.DateField(verbose_name='дата прогноза',)
     sales_type = models.IntegerField(verbose_name='тип продаж',)
-    sales_units = models.IntegerField(verbose_name='всего шт',)
-    sales_units_promo = models.IntegerField(verbose_name='промо шт',)
+    sales_units = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        verbose_name='всего шт',
+    )
+    sales_units_promo = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        verbose_name='промо шт',
+    )
     sales_rub = models.DecimalField(
-        max_digits=3,
+        max_digits=8,
         decimal_places=2,
         verbose_name='всего руб',
     )
     sales_run_promo = models.DecimalField(
-        max_digits=3,
+        max_digits=8,
         decimal_places=2,
         verbose_name='промо руб',
     )
