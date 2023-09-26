@@ -16,7 +16,7 @@ from backend.products.setup_logger import setup_logger
 logger = setup_logger()
 
 
-def main()
+def main():
     with open('backend/products/data/sales_submission.csv', encoding='utf-8') as f:
         reader = csv.reader(f)
         count = 0
