@@ -26,10 +26,11 @@ class Command(BaseCommand):
                     store_sku = ForecastSku.objects.get_or_create(
                         st_id=store,
                         pr_sku_id=sku,
-                        date=today,
+                        forecast_date=today,
                     )
+                    obj, _ = store_sku
                     Forecast.objects.get_or_create(
-                        forecast_sku_id=store_sku,
+                        forecast_sku_id=obj,
                         date=date,
                         target=target,
                     )
