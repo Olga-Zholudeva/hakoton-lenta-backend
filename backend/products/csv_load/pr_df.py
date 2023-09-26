@@ -1,15 +1,10 @@
 import csv
-import logging
 
 from products.models import Sku
+from products.setup_logger import setup_logger
 
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s, %(levelname)s, %(message)s')
-handler = logging.StreamHandler()
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+logger = setup_logger()
 
 
 def main()
