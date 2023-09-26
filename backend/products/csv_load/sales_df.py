@@ -1,6 +1,6 @@
 import csv
 
-from products.models import Store
+from products.models import Sales
 from products.setup_logger import setup_logger
 
 
@@ -16,7 +16,7 @@ def main()
                 logger.info('старт загрузки данных')
                 (st_id, pr_sku_id, date, pr_sales_type_id, pr_sales_in_units,
                  pr_promo_sales_in_units, pr_sales_in_rub, pr_promo_sales_in_rub = row)
-                Store.objects.get_or_create(
+                Sales.objects.get_or_create(
                     st_id=st_id,
                     pr_sku_id=pr_sku_id,
                     date=date,
