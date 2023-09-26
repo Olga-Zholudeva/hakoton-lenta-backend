@@ -171,3 +171,5 @@ DJOSER = {
         'user_list': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
     }
 }
+
+MAX_LENGTH = 150
