@@ -14,7 +14,8 @@ def main()
         for row in reader:
             try:
                 logger.info('старт загрузки данных')
-                pr_sku_id, pr_group_id, pr_cat_id, pr_subcat_id, pr_uom_id = row
+                (st_id, st_city_id, st_division_code, st_type_format_id,
+                 st_type_loc_id, st_type_size_id, st_is_active = row)
                 Store.objects.get_or_create(
                     st_id=st_id,
                     st_city_id=st_city_id,
