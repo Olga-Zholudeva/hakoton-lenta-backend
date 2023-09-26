@@ -106,8 +106,16 @@ class Sales(models.Model):
     sales_type = models.IntegerField(verbose_name='тип продаж',)
     sales_units = models.IntegerField(verbose_name='всего шт',)
     sales_units_promo = models.IntegerField(verbose_name='промо шт',)
-    sales_rub = models.DecimalField(verbose_name='всего руб',)
-    sales_run_promo = models.DecimalField(verbose_name='промо руб',)
+    sales_rub = models.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        verbose_name='всего руб',
+    )
+    sales_run_promo = models.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        verbose_name='промо руб',
+    )
 
     class Meta:
         ordering = ('-date',)
