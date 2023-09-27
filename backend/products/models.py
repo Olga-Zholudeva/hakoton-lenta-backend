@@ -99,26 +99,26 @@ class Sales(models.Model):
         related_name='sales_sku',
         verbose_name='товар',
     )
-    date = models.DateField(verbose_name='дата прогноза',)
+    date = models.DateField(verbose_name='дата продаж',)
     sales_type = models.IntegerField(verbose_name='тип продаж',)
     sales_units = models.DecimalField(
         max_digits=6,
-        decimal_places=2,
+        decimal_places=0,
         verbose_name='всего шт',
     )
     sales_units_promo = models.DecimalField(
         max_digits=6,
-        decimal_places=2,
+        decimal_places=1,
         verbose_name='промо шт',
     )
     sales_rub = models.DecimalField(
         max_digits=8,
-        decimal_places=2,
+        decimal_places=1,
         verbose_name='всего руб',
     )
     sales_run_promo = models.DecimalField(
         max_digits=8,
-        decimal_places=2,
+        decimal_places=1,
         verbose_name='промо руб',
     )
 
