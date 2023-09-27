@@ -16,14 +16,15 @@ class Command(BaseCommand):
             reader = csv.reader(f)
             count = 0
             logger.info('старт загрузки данных')
+            sales_list = []
             for row in tqdm(reader):
                 try:
                     st_id, pr_sku_id, date, pr_sales_type_id, pr_sales_in_units, pr_promo_sales_in_units, pr_sales_in_rub, pr_promo_sales_in_rub = row
-                    store = Store.objects.get(pk=st_id)
-                    sku = Sku.objects.get(pk=pr_sku_id)
+                    # store = Store.objects.get(pk=st_id)
+                    # sku = Sku.objects.get(pk=pr_sku_id)
                     sales = Sales(
-                        st_id=store,
-                        pr_sku_id=sku,
+                        st_id=st_id,
+                        pr_sku_id=pr_sku_id,
                         date=date,
                         sales_type=pr_sales_type_id,
                         sales_units=pr_sales_in_units,
