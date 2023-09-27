@@ -1,8 +1,12 @@
-from rest_framework import viewsets
-from products.models import Sku, Sales, Store
-from api.serializers import SkuSerializer, SalesSerializer, StoreSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets
+from rest_framework.permissions import SAFE_METHODS
+
+from api.serializers import (SkuSerializer, SalesSerializer, StoreSerializer,
+                             ForecastSkuSerializer, ForecastSkuPostSerializer)
 from api.filters import SalesFilter
+from products.models import Sku, Sales, Store, ForecastSku
+
 
 class SkuViewSet(viewsets.ReadOnlyModelViewSet):
     '''Обработчик для товаров.'''
@@ -17,7 +21,18 @@ class SalesViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = SalesFilter
 
+
 class StoreViewSet(viewsets.ReadOnlyModelViewSet):
     '''Обработчик для магазинов.'''
     queryset = Store.objects.all()
-    serializer_class = StoreSerializer 
+    serializer_class = StoreSerializer
+
+
+class ForecastViewSet(viewsets.ModelViewSet):
+    '''Обработчик для прогноза'''
+    queryset = ForecastSku.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return ForecastSkuSerializer
+        return ForecastSkuPostSerializer

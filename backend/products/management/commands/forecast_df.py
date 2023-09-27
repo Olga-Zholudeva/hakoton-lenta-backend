@@ -15,26 +15,33 @@ today = date.today()
 class Command(BaseCommand):
     def handle(self, *args, **options):
         with open('products/data/sales_submission.csv', encoding='utf-8') as f:
+            logger.info('старт загрузки данных')
             reader = csv.reader(f)
             count = 0
-            logger.info('старт загрузки данных')
+            forecast_sku_list = []
+            forecast_list = []
+            all_store = Store.objects.all()
+            all_sku = Sku.objects.all()
             for row in tqdm(reader):
                 try:
                     st_id, pr_sku_id, date, target = row
-                    store = Store.objects.get(pk=st_id)
-                    sku = Sku.objects.get(pk=pr_sku_id)
-                    store_sku = ForecastSku.objects.get_or_create(
+                    store = all_store.get(pk=st_id)
+                    sku = all_sku.get(pk=pr_sku_id)
+                    store_sku = ForecastSku(
                         st_id=store,
                         pr_sku_id=sku,
                         forecast_date=today,
                     )
-                    obj, _ = store_sku
-                    Forecast.objects.get_or_create(
-                        forecast_sku_id=obj,
+                    forecast = Forecast(
+                        forecast_sku_id=store_sku,
                         date=date,
                         target=target,
                     )
+                    forecast_sku_list.append(store_sku)
+                    forecast_list.append(forecast)
                     count += 1
                 except Exception as error:
                     logger.error(f'сбой в работе: {error}')
+            ForecastSku.objects.bulk_create(forecast_sku_list, batch_size=1000)
+            Forecast.objects.bulk_create(forecast_list, batch_size=1000)
             logger.info(f'загружено {count} строк')
