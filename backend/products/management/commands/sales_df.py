@@ -21,7 +21,7 @@ class Command(BaseCommand):
                     st_id, pr_sku_id, date, pr_sales_type_id, pr_sales_in_units, pr_promo_sales_in_units, pr_sales_in_rub, pr_promo_sales_in_rub = row
                     store = Store.objects.get(pk=st_id)
                     sku = Sku.objects.get(pk=pr_sku_id)
-                    Sales.objects.get_or_create(
+                    sales = Sales(
                         st_id=store,
                         pr_sku_id=sku,
                         date=date,
@@ -31,7 +31,9 @@ class Command(BaseCommand):
                         sales_rub=pr_sales_in_rub,
                         sales_run_promo=pr_promo_sales_in_rub
                     )
+                    sales_list.append(sales)
                     count += 1
                 except Exception as error:
                     logger.error(f'сбой в работе: {error}')
+            Sales.objects.bulk_create(sales_list)
             logger.info(f'загружено {count} строк')
