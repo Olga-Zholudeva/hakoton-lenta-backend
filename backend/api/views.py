@@ -5,7 +5,7 @@ from rest_framework.permissions import SAFE_METHODS
 from api.serializers import (SalesSerializer, SalesPostSerializer,
                              StoreSerializer, SkuSerializer,
                              ForecastSkuSerializer, ForecastSkuPostSerializer)
-from api.filters import SalesFilter
+from api.filters import SalesFilter, ForecastFilter
 from products.models import Sku, Sales, Store, ForecastSku
 
 
@@ -34,8 +34,10 @@ class StoreViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ForecastViewSet(viewsets.ModelViewSet):
-    '''Обработчик для прогноза'''
+    '''Обработчик для прогноза.'''
     queryset = ForecastSku.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = ForecastFilter
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
