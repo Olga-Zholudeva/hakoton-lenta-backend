@@ -63,6 +63,7 @@ class ForecastSku(models.Model):
     forecast_date = models.DateField(verbose_name='дата прогноза',)
 
     class Meta:
+        ordering = ['forecast_date']
         verbose_name = 'прогноз'
         verbose_name_plural = 'прогнозы'
 

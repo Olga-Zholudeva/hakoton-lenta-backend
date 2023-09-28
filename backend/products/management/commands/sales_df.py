@@ -13,9 +13,9 @@ logger = setup_logger()
 class Command(BaseCommand):
     def handle(self, *args, **options):
         with open('products/data/sales_df_train.csv', encoding='utf-8') as f:
+            logger.info('старт загрузки данных')
             reader = csv.reader(f)
             count = 0
-            logger.info('старт загрузки данных')
             sales_list = []
             all_store = Store.objects.all()
             all_sku = Sku.objects.all()
@@ -38,5 +38,5 @@ class Command(BaseCommand):
                     count += 1
                 except Exception as error:
                     logger.error(f'сбой в работе: {error}')
-            Sales.objects.bulk_create(sales_list)
+            Sales.objects.bulk_create(sales_list, batch_size=1000)
             logger.info(f'загружено {count} строк')
