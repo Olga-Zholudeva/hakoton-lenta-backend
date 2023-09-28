@@ -10,7 +10,7 @@ class SkuSerializer(serializers.ModelSerializer):
     group = serializers.CharField(source='pr_group_id')
     category = serializers.CharField(source='pr_cat_id')
     subcategory = serializers.CharField(source='pr_subcat_id')
-    uom = serializers.CharField(source='pr_uom_id')
+    uom = serializers.IntegerField(source='pr_uom_id')
 
     class Meta:
         model = Sku
@@ -51,15 +51,39 @@ class SalesSerializer(serializers.ModelSerializer):
         return fact_serializer.data
 
 
+class SalesPostSerializer(serializers.ModelSerializer):
+    '''Сериализатор загрузки факта продаж.'''
+    store = serializers.PrimaryKeyRelatedField(
+        source='st_id',
+        queryset=Store.objects.all()
+    )
+    sku = serializers.PrimaryKeyRelatedField(
+        source='pr_sku_id',
+        queryset=Sku.objects.all()
+    )
+    date = serializers.DateField()
+    sales_type = serializers.IntegerField(min_value=0, max_value=1)
+    sales_units = serializers.DecimalField(max_digits=6, decimal_places=1)
+    sales_units_promo = serializers.DecimalField(max_digits=6,
+                                                 decimal_places=1)
+    sales_rub = serializers.DecimalField(max_digits=8, decimal_places=1)
+    sales_run_promo = serializers.DecimalField(max_digits=8, decimal_places=1)
+
+    class Meta:
+        model = Sales
+        fields = ('store', 'sku', 'date', 'sales_type', 'sales_units'
+                  'sales_units_promo', 'sales_rub', 'sales_run_promo')
+
+
 class StoreSerializer(serializers.ModelSerializer):
     '''Сериализатор для модели Магазины.'''
     store = serializers.CharField(source='st_id')
     city = serializers.CharField(source='st_city_id')
     division = serializers.CharField(source='st_division_code')
-    type_format = serializers.CharField(source='st_type_format_id')
-    loc = serializers.CharField(source='st_type_loc_id')
-    size = serializers.CharField(source='st_type_size_id')
-    is_active = serializers.CharField(source='st_is_active')
+    type_format = serializers.IntegerField(source='st_type_format_id')
+    loc = serializers.IntegerField(source='st_type_loc_id')
+    size = serializers.IntegerField(source='st_type_size_id')
+    is_active = serializers.IntegerField(source='st_is_active')
 
     class Meta:
         model = Store
@@ -68,7 +92,7 @@ class StoreSerializer(serializers.ModelSerializer):
 
 
 class ForecastSerializer(serializers.ModelSerializer):
-    target = serializers.IntegerField(min_value=0)
+    target = serializers.DecimalField(max_digits=6, decimal_places=1)
     date = serializers.DateField()
 
     class Meta:
@@ -96,14 +120,14 @@ def set_forecast(forecast_sku, all_forecast):
 
 
 class ForecastSkuPostSerializer(serializers.ModelSerializer):
-    st_id = serializers.CharField(max_length=200)
-    pr_sku_id = serializers.CharField(max_length=200)
+    store = serializers.CharField(source='st_id', max_length=200)
+    sku = serializers.CharField(source='pr_sku_id', max_length=200)
     forecast_date = serializers.DateField()
     forecast = ForecastSerializer(many=True,)
 
     class Meta:
         model = ForecastSku
-        fields = ('st_id', 'pr_sku_id', 'forecast_date', 'forecast')
+        fields = ('store', 'sku', 'forecast_date', 'forecast')
 
     def create(self, validated_data):
         all_forecast = validated_data.pop('forecast')
