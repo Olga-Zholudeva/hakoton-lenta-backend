@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -82,6 +83,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
 
 # Database
@@ -168,8 +170,19 @@ CORS_ALLOWED_ORIGINS = [
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'PERMISSIONS': {
-        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
-        'user_list': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+        'activation': ['djoser.permissions.CurrentUserOrAdmin'],
+        'password_reset': ['djoser.permissions.CurrentUserOrAdmin'],
+        'password_reset_confirm': ['djoser.permissions.CurrentUserOrAdmin'],
+        'set_password': ['djoser.permissions.CurrentUserOrAdmin'],
+        'username_reset': ['djoser.permissions.CurrentUserOrAdmin'],
+        'username_reset_confirm': ['djoser.permissions.CurrentUserOrAdmin'],
+        'set_username': ['djoser.permissions.CurrentUserOrAdmin'],
+        'user_create': ['rest_framework.permissions.IsAdminUser'],
+        'user_delete': ['rest_framework.permissions.IsAdminUser'],
+        'user': ['djoser.permissions.CurrentUserOrAdmin'],
+        'user_list': ['djoser.permissions.CurrentUserOrAdmin'],
+        'token_create': ['djoser.permissions.CurrentUserOrAdmin'],
+        'token_destroy': ['djoser.permissions.CurrentUserOrAdmin'],
     }
 }
 
