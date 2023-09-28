@@ -34,13 +34,20 @@ class SalesViewSet(
         return SalesPostSerializer
 
 
-class StoreViewSet(viewsets.ReadOnlyModelViewSet):
+class StoreViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet 
+):
     '''Обработчик для магазинов.'''
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
 
 
-class ForecastViewSet(viewsets.ModelViewSet):
+class ForecastViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet 
+):
     '''Обработчик для прогноза.'''
     queryset = ForecastSku.objects.all()
     filter_backends = (DjangoFilterBackend,)
