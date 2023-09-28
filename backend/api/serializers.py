@@ -71,7 +71,7 @@ class SalesPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sales
-        fields = ('store', 'sku', 'date', 'sales_type', 'sales_units'
+        fields = ('store', 'sku', 'date', 'sales_type', 'sales_units',
                   'sales_units_promo', 'sales_rub', 'sales_run_promo')
 
 
