@@ -9,7 +9,10 @@ from api.filters import SalesFilter, ForecastFilter
 from products.models import Sku, Sales, Store, ForecastSku
 
 
-class SkuViewSet(viewsets.ReadOnlyModelViewSet):
+class SkuViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
     '''Обработчик для товаров.'''
     queryset = Sku.objects.all()
     serializer_class = SkuSerializer
