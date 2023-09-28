@@ -56,12 +56,10 @@ class SalesPostSerializer(serializers.ModelSerializer):
     store = serializers.PrimaryKeyRelatedField(
         read_only=True,
         source='st_id',
-        queryset=Store.objects.all()
     )
     sku = serializers.PrimaryKeyRelatedField(
         read_only=True,
         source='pr_sku_id',
-        queryset=Sku.objects.all()
     )
     date = serializers.DateField()
     sales_type = serializers.IntegerField(min_value=0, max_value=1)
@@ -125,12 +123,10 @@ class ForecastSkuPostSerializer(serializers.ModelSerializer):
     store = serializers.PrimaryKeyRelatedField(
         read_only=True,
         source='st_id',
-        queryset=Store.objects.all()
     )
     sku = serializers.PrimaryKeyRelatedField(
         read_only=True,
         source='pr_sku_id',
-        queryset=Sku.objects.all()
     )
     forecast_date = serializers.DateField()
     forecast = ForecastSerializer(many=True,)
