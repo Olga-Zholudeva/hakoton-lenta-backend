@@ -54,10 +54,12 @@ class SalesSerializer(serializers.ModelSerializer):
 class SalesPostSerializer(serializers.ModelSerializer):
     '''Сериализатор загрузки факта продаж.'''
     store = serializers.PrimaryKeyRelatedField(
+        read_only=True,
         source='st_id',
         queryset=Store.objects.all()
     )
     sku = serializers.PrimaryKeyRelatedField(
+        read_only=True,
         source='pr_sku_id',
         queryset=Sku.objects.all()
     )
@@ -71,7 +73,7 @@ class SalesPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sales
-        fields = ('store', 'sku', 'date', 'sales_type', 'sales_units',
+        fields = ('store', 'sku', 'date', 'sales_type', 'sales_units'
                   'sales_units_promo', 'sales_rub', 'sales_run_promo')
 
 
@@ -120,8 +122,16 @@ def set_forecast(forecast_sku, all_forecast):
 
 
 class ForecastSkuPostSerializer(serializers.ModelSerializer):
-    store = serializers.CharField(source='st_id', max_length=200)
-    sku = serializers.CharField(source='pr_sku_id', max_length=200)
+    store = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_id',
+        queryset=Store.objects.all()
+    )
+    sku = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='pr_sku_id',
+        queryset=Sku.objects.all()
+    )
     forecast_date = serializers.DateField()
     forecast = ForecastSerializer(many=True,)
 
@@ -131,11 +141,9 @@ class ForecastSkuPostSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         all_forecast = validated_data.pop('forecast')
-        store = Store.objects.get(pk=validated_data['st_id'])
-        sku = Sku.objects.get(pk=validated_data['pr_sku_id'])
         forecast_sku = ForecastSku.objects.create(
-            st_id=store,
-            pr_sku_id=sku,
+            st_id=validated_data['store'],
+            pr_sku_id=validated_data['sku'],
             forecast_date=validated_data['forecast_date']
         )
         set_forecast(forecast_sku, all_forecast)
