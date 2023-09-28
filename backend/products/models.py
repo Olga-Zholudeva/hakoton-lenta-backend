@@ -104,7 +104,7 @@ class Sales(models.Model):
     sales_type = models.IntegerField(verbose_name='тип продаж',)
     sales_units = models.DecimalField(
         max_digits=6,
-        decimal_places=0,
+        decimal_places=1,
         verbose_name='всего шт',
     )
     sales_units_promo = models.DecimalField(
