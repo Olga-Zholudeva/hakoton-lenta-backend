@@ -1,5 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from rest_framework.permissions import SAFE_METHODS
 
 from api.serializers import (SalesSerializer, SalesPostSerializer,
@@ -15,7 +15,11 @@ class SkuViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SkuSerializer
 
 
-class SalesViewSet(viewsets.ModelViewSet):
+class SalesViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
     '''Обработчик для фактических продаж.'''
     queryset = Sales.objects.all()
     filter_backends = (DjangoFilterBackend,)
