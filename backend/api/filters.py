@@ -17,7 +17,7 @@ class SalesFilter(FilterSet):
 class ForecastFilter(FilterSet):
     st_id = filters.CharFilter()
     pr_sku_id = filters.CharFilter()
-    forecast_date = filters.DateField()
+    forecast_date = filters.DateFilter()
 
     class Meta:
         model = ForecastSku
