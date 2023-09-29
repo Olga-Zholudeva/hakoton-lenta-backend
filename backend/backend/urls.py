@@ -1,10 +1,19 @@
 from django.contrib import admin
 from django.urls import include, path
 from django.urls import path, include
-from rest_framework import routers
 from rest_framework import permissions
+from drf_yasg.generators import OpenAPISchemaGenerator
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+import yaml
+
+
+class CustomOpenAPISchemaGenerator(OpenAPISchemaGenerator):
+    def get_schema(self, request=None, public=False):
+        schema = super().get_schema(request, public)
+        with open('../docs/openapi-schema.yaml', 'w') as file:
+            yaml.dump(schema, file)
+        return schema
 
 
 schema_view = get_schema_view(
@@ -18,6 +27,7 @@ schema_view = get_schema_view(
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
+    generator_class=CustomOpenAPISchemaGenerator,
 )
 
 urlpatterns = [
