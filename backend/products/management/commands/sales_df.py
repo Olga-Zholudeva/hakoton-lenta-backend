@@ -15,6 +15,7 @@ class Command(BaseCommand):
         with open('products/data/sales_df_train.csv', encoding='utf-8') as f:
             logger.info('старт загрузки данных')
             reader = csv.reader(f)
+            next(reader)
             count = 0
             sales_list = []
             all_store = Store.objects.all()

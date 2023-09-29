@@ -15,6 +15,7 @@ class Command(BaseCommand):
         with open('products/data/pr_df.csv', encoding='utf-8') as f:
             logger.info('старт загрузки данных')
             reader = csv.reader(f)
+            next(reader)
             count = 0
             sku_list = []
             for row in tqdm(reader):

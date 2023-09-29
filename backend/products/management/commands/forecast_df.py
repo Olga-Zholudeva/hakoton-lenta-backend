@@ -17,6 +17,7 @@ class Command(BaseCommand):
         with open('products/data/sales_submission.csv', encoding='utf-8') as f:
             logger.info('старт загрузки данных')
             reader = csv.reader(f)
+            next(reader)
             count = 0
             forecast_sku_list = []
             forecast_list = []
