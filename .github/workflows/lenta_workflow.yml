@@ -1,7 +1,7 @@
 name: lenta_workflow
 
 on:
-  pull_request:
+  push:
     branches: [dev]
 
 jobs:
