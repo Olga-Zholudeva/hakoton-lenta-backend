@@ -37,6 +37,11 @@ class Command(BaseCommand):
                     )
                     sales_list.append(sales)
                     count += 1
+                    if count > 10000:
+                        Sales.objects.bulk_create(sales_list, batch_size=1000)
+                        logger.info(f'загружено {count} строк')
+                        count = 0
+                        sales_list = []
                 except Exception as error:
                     logger.error(f'сбой в работе: {error}')
             Sales.objects.bulk_create(sales_list, batch_size=1000)
