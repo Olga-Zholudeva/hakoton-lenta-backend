@@ -7,7 +7,6 @@ from products.models import Sku, Store, ForecastSku, Forecast, Sales
 class SkuAdmin(admin.ModelAdmin):
     list_display = ('pr_sku_id', 'pr_group_id', 'pr_cat_id', 'pr_subcat_id',
                     'pr_uom_id')
-    list_filter = ('pr_uom_id',)
     search_fields = ('pr_sku_id', 'pr_group_id', 'pr_cat_id', 'pr_subcat_id')
 
 
@@ -16,7 +15,6 @@ class StoreAdmin(admin.ModelAdmin):
     list_display = ('st_id', 'st_city_id', 'st_division_code',
                     'st_type_format_id', 'st_type_loc_id',
                     'st_type_size_id', 'st_is_active')
-    list_filter = ('st_is_active',)
     search_fields = ('st_id', 'st_city_id', 'st_division_code')
 
 
