@@ -179,9 +179,19 @@ DJOSER = {
         'user_delete': ['rest_framework.permissions.IsAdminUser'],
         'user': ['djoser.permissions.CurrentUserOrAdmin'],
         'user_list': ['djoser.permissions.CurrentUserOrAdmin'],
-        'token_create': ['djoser.permissions.CurrentUserOrAdmin'],
-        'token_destroy': ['djoser.permissions.CurrentUserOrAdmin'],
+        'token_create': ['rest_framework.permissions.AllowAny'],
+        'token_destroy': ['rest_framework.permissions.IsAuthenticated'],
     }
 }
 
 MAX_LENGTH = 150
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
+}
