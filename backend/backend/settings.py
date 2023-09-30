@@ -161,9 +161,10 @@ REST_FRAMEWORK = {
 
 CORS_URLS_REGEX = r'^/api/.*$'
 
-CORS_ALLOWED_ORIGINS = [
+'''CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-]
+]'''
+CORS_ORIGIN_ALLOW_ALL = True
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
