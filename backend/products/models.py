@@ -23,6 +23,9 @@ class Sku(models.Model):
     )
     pr_uom_id = models.IntegerField(verbose_name='Единицы измерения',)
 
+    class Meta:
+        ordering = ['pr_sku_id']
+
 
 class Store(models.Model):
     '''Магазин'''
@@ -44,6 +47,9 @@ class Store(models.Model):
     st_type_loc_id = models.IntegerField(verbose_name='тип локации/окружения',)
     st_type_size_id = models.IntegerField(verbose_name='размер',)
     st_is_active = models.IntegerField(verbose_name='активность',)
+
+    class Meta:
+        ordering = ['st_id']
 
 
 class ForecastSku(models.Model):
@@ -83,7 +89,7 @@ class Forecast(models.Model):
     )
 
     class Meta:
-        ordering = ('-date',)
+        ordering = ['-date']
 
 
 class Sales(models.Model):
