@@ -12,7 +12,7 @@ router.register('shops', StoreViewSet)
 router.register('forecast', ForecastViewSet)
 
 urlpatterns = [
-    path('auth/', include('djoser.urls.authtoken')),
+    path('api/auth/', include('djoser.urls.authtoken')),
     path('', include('djoser.urls')),
-    path('api', include(router.urls)),
+    path('api/', include(router.urls)),
 ]
