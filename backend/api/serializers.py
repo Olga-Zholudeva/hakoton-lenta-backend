@@ -27,8 +27,14 @@ class SalesFactSerializer(serializers.ModelSerializer):
 
 class SalesSerializer(serializers.ModelSerializer):
     '''Сериализатор для модели с фактом продаж.'''
-    store = serializers.CharField(source='st_id')
-    sku = serializers.CharField(source='pr_sku_id')
+    store = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_id',
+    )
+    sku = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='pr_sku_id',
+    )
     fact = serializers.SerializerMethodField()
 
     class Meta:
