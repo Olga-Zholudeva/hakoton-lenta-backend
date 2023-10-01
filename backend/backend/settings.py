@@ -159,12 +159,16 @@ REST_FRAMEWORK = {
     'SEARCH_PARAM': 'name'
 }
 
-CORS_URLS_REGEX = r'^/api/.*$'
 
-'''CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-]'''
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE']
+CORS_ALLOW_HEADERS = ['Authorization', 'Content-Type']
+
+'''
+CORS_URLS_REGEX = r'^/api/.*$'
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000',]
+'''
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
