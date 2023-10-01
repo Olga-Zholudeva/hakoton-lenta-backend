@@ -164,8 +164,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE']
 CORS_ALLOW_HEADERS = ['Authorization', 'Content-Type', 'X-CSRFToken', 'accept']
+CORS_ALLOWED_ORIGINS = ['http://web:8000', ]
 '''
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000',]
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000', ]  # хост для фронта
 '''
 
 DJOSER = {
