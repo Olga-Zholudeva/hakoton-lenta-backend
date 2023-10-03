@@ -1,9 +1,7 @@
-from django.db.models import Sum
+from django.db.models import Sum, Max
 from rest_framework import serializers
 
 from products.models import Sku, Store, Forecast
-
-from django.db.models import Max
 
 
 class SkuSerializer(serializers.ModelSerializer):
@@ -17,6 +15,7 @@ class SkuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sku
         fields = ('sku', 'group', 'category', 'subcategory', 'uom',)
+
 
 class StoreSerializer(serializers.ModelSerializer):
     '''Сериализатор для модели Магазины.'''
@@ -32,8 +31,11 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = ('store', 'city', 'division', 'type_format', 'loc', 'size',
                   'is_active',)
-class FarecastSkuSerializer(serializers.ModelSerializer):
+
+
+class ForecastSkuSerializer(serializers.ModelSerializer):
     date = serializers.CharField(source='st_sku_date.date')
+
     class Meta:
         model = Forecast
         fields = ('date', 'sales_units',)
@@ -47,10 +49,9 @@ class ForecastSerializer(serializers.ModelSerializer):
     pr_group_id = serializers.CharField(source='st_sku_date.pr_sku_id.pr_group_id')
     pr_cat_id = serializers.CharField(source='st_sku_date.pr_sku_id.pr_cat_id')
     subcategory = serializers.CharField(source='st_sku_date.pr_sku_id.pr_subcat_id')
-    pr_sku_id = serializers.CharField(
-        source='st_sku_date.pr_sku_id'
-    )
+    pr_sku_id = serializers.CharField(source='st_sku_date.pr_sku_id')
     forecast = serializers.SerializerMethodField()
+
     class Meta:
         model = Forecast
         fields = ('st_id', 'pr_group_id', 'pr_cat_id', 'subcategory', 'pr_sku_id', 'forecast',)
@@ -62,5 +63,4 @@ class ForecastSerializer(serializers.ModelSerializer):
             st_sku_date__st_id=obj.st_sku_date.st_id,
             st_sku_date__pr_sku_id=obj.st_sku_date.pr_sku_id
         )
-        return FarecastSkuSerializer(forecast, many=True).data
-
+        return ForecastSkuSerializer(forecast, many=True).data
