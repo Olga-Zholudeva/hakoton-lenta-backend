@@ -111,7 +111,7 @@ class Forecast(models.Model):
     st_sku_date = models.ForeignKey(
         Sales,
         on_delete=models.CASCADE,
-        related_name='sales_store_date',
+        related_name='f_sales_store_date',
         verbose_name='магазин-товар-дата',
     )
     sales_units = models.DecimalField(
@@ -130,7 +130,7 @@ class SalesDiff(models.Model):
     st_sku_date = models.ForeignKey(
         Sales,
         on_delete=models.CASCADE,
-        related_name='sales_store_date',
+        related_name='d_sales_store_date',
         verbose_name='магазин-товар-дата',
     )
     diff_sales_units = models.DecimalField(
