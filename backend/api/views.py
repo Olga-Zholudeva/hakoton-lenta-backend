@@ -2,11 +2,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.permissions import SAFE_METHODS
 
-from api.serializers import (SalesSerializer, SalesPostSerializer,
-                             StoreSerializer, SkuSerializer,
-                             ForecastSkuSerializer, ForecastSkuPostSerializer)
-from api.filters import SalesFilter, ForecastFilter
-from products.models import Sku, Sales, Store, ForecastSku
+from api.serializers import (
+                             StoreSerializer, SkuSerializer, ForecastSerializer
+                             )
+from api.filters import ForecastFilter
+from products.models import Sku, Store, Forecast
 
 
 class SkuViewSet(
@@ -17,22 +17,15 @@ class SkuViewSet(
     queryset = Sku.objects.all()
     serializer_class = SkuSerializer
 
-
-class SalesViewSet(
-    mixins.CreateModelMixin,
+class ForecastViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet
 ):
-    '''Обработчик для фактических продаж.'''
-    queryset = Sales.objects.all()
+    '''Обработчик для прогноза'''
+    queryset = Forecast.objects.all()
+    serializer_class = ForecastSerializer
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = SalesFilter
-
-    def get_serializer_class(self):
-        if self.request.method in SAFE_METHODS:
-            return SalesSerializer
-        return SalesPostSerializer
-
+    filterset_class = ForecastFilter
 
 class StoreViewSet(
     mixins.ListModelMixin,
@@ -42,18 +35,3 @@ class StoreViewSet(
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
 
-
-class ForecastViewSet(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet 
-):
-    '''Обработчик для прогноза.'''
-    queryset = ForecastSku.objects.all()
-    filter_backends = (DjangoFilterBackend,)
-    filterset_class = ForecastFilter
-
-    def get_serializer_class(self):
-        if self.request.method in SAFE_METHODS:
-            return ForecastSkuSerializer
-        return ForecastSkuPostSerializer

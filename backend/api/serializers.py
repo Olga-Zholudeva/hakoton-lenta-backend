@@ -1,7 +1,9 @@
 from django.db.models import Sum
 from rest_framework import serializers
 
-from products.models import Sku, Sales, Store, Forecast, ForecastSku
+from products.models import Sku, Store, Forecast
+
+from django.db.models import Max
 
 
 class SkuSerializer(serializers.ModelSerializer):
@@ -15,71 +17,6 @@ class SkuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sku
         fields = ('sku', 'group', 'category', 'subcategory', 'uom',)
-
-
-class SalesFactSerializer(serializers.ModelSerializer):
-    '''Промежуточный сериализатор для агрегации продаж по магазину и товару.'''
-    class Meta:
-        model = Sales
-        fields = ('date', 'sales_type', 'sales_units', 'sales_units_promo',
-                  'sales_rub', 'sales_run_promo',)
-
-
-class SalesSerializer(serializers.ModelSerializer):
-    '''Сериализатор для модели с фактом продаж.'''
-    store = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='st_id',
-    )
-    sku = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='pr_sku_id',
-    )
-    fact = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Sales
-        fields = ('store', 'sku', 'fact',)
-
-    def get_fact(self, obj):
-        '''Получаем данные по продажам,
-           сгруппированные по полям st_id и pr_sku_id.'''
-        grouped_sales = Sales.objects.filter(st_id=obj.st_id,
-                                             pr_sku_id=obj.pr_sku_id).values(
-            'date', 'sales_type').annotate(
-            sales_units=Sum('sales_units'),
-            sales_units_promo=Sum('sales_units_promo'),
-            sales_rub=Sum('sales_rub'),
-            sales_run_promo=Sum('sales_run_promo')
-        )
-
-        fact_serializer = SalesFactSerializer(grouped_sales, many=True)
-        return fact_serializer.data
-
-
-class SalesPostSerializer(serializers.ModelSerializer):
-    '''Сериализатор загрузки факта продаж.'''
-    store = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='st_id',
-    )
-    sku = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='pr_sku_id',
-    )
-    date = serializers.DateField()
-    sales_type = serializers.IntegerField(min_value=0, max_value=1)
-    sales_units = serializers.DecimalField(max_digits=6, decimal_places=1)
-    sales_units_promo = serializers.DecimalField(max_digits=6,
-                                                 decimal_places=1)
-    sales_rub = serializers.DecimalField(max_digits=8, decimal_places=1)
-    sales_run_promo = serializers.DecimalField(max_digits=8, decimal_places=1)
-
-    class Meta:
-        model = Sales
-        fields = ('store', 'sku', 'date', 'sales_type', 'sales_units',
-                  'sales_units_promo', 'sales_rub', 'sales_run_promo')
-
 
 class StoreSerializer(serializers.ModelSerializer):
     '''Сериализатор для модели Магазины.'''
@@ -95,58 +32,35 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = ('store', 'city', 'division', 'type_format', 'loc', 'size',
                   'is_active',)
+class FarecastSkuSerializer(serializers.ModelSerializer):
+    date = serializers.CharField(source='st_sku_date.date')
+    class Meta:
+        model = Forecast
+        fields = ('date', 'sales_units',)
 
 
 class ForecastSerializer(serializers.ModelSerializer):
-    target = serializers.DecimalField(max_digits=6, decimal_places=1)
-    date = serializers.DateField()
-
+    '''Сериализатор для страницы с прогнозом продаж'''
+    st_id = serializers.CharField(
+        source='st_sku_date.st_id'
+    )
+    pr_group_id = serializers.CharField(source='st_sku_date.pr_sku_id.pr_group_id')
+    pr_cat_id = serializers.CharField(source='st_sku_date.pr_sku_id.pr_cat_id')
+    subcategory = serializers.CharField(source='st_sku_date.pr_sku_id.pr_subcat_id')
+    pr_sku_id = serializers.CharField(
+        source='st_sku_date.pr_sku_id'
+    )
+    forecast = serializers.SerializerMethodField()
     class Meta:
         model = Forecast
-        fields = ('date', 'target',)
-
-
-class ForecastSkuSerializer(serializers.ModelSerializer):
-    forecast = serializers.SerializerMethodField()
-
-    class Meta:
-        model = ForecastSku
-        fields = ('st_id', 'pr_sku_id', 'forecast_date', 'forecast',)
-
+        fields = ('st_id', 'pr_group_id', 'pr_cat_id', 'subcategory', 'pr_sku_id', 'forecast',)
+    
     def get_forecast(self, obj):
-        forecast = Forecast.objects.filter(forecast_sku_id=obj)
-        return ForecastSerializer(forecast, many=True).data
-
-
-def set_forecast(forecast_sku, all_forecast):
-    Forecast.objects.bulk_create([Forecast(
-        forecast_sku_id=forecast_sku,
-        date=forecast['date'],
-        target=forecast['target']) for forecast in all_forecast])
-
-
-class ForecastSkuPostSerializer(serializers.ModelSerializer):
-    store = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='st_id',
-    )
-    sku = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='pr_sku_id',
-    )
-    forecast_date = serializers.DateField()
-    forecast = ForecastSerializer(many=True,)
-
-    class Meta:
-        model = ForecastSku
-        fields = ('store', 'sku', 'forecast_date', 'forecast')
-
-    def create(self, validated_data):
-        all_forecast = validated_data.pop('forecast')
-        forecast_sku = ForecastSku.objects.create(
-            st_id=validated_data['store'],
-            pr_sku_id=validated_data['sku'],
-            forecast_date=validated_data['forecast_date']
+        last_forecast = Forecast.objects.aggregate(Max('forecast_date'))['forecast_date__max']
+        forecast = Forecast.objects.filter(
+            forecast_date = last_forecast,
+            st_sku_date__st_id=obj.st_sku_date.st_id,
+            st_sku_date__pr_sku_id=obj.st_sku_date.pr_sku_id
         )
-        set_forecast(forecast_sku, all_forecast)
-        return forecast_sku
+        return FarecastSkuSerializer(forecast, many=True).data
+

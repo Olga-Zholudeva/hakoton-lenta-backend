@@ -24,7 +24,7 @@ class Sku(models.Model):
     pr_uom_id = models.IntegerField(verbose_name='Единицы измерения',)
 
     class Meta:
-        ordering = ['pr_sku_id']
+        ordering = ('pr_sku_id',)
 
 
 class Store(models.Model):
@@ -49,51 +49,11 @@ class Store(models.Model):
     st_is_active = models.IntegerField(verbose_name='активность',)
 
     class Meta:
-        ordering = ['st_id']
-
-
-class ForecastSku(models.Model):
-    '''Дата прогноза'''
-    st_id = models.ForeignKey(
-        Store,
-        on_delete=models.CASCADE,
-        related_name='forecast_store',
-        verbose_name='магазин',
-    )
-    pr_sku_id = models.ForeignKey(
-        Sku,
-        on_delete=models.CASCADE,
-        related_name='forecast_sku',
-        verbose_name='товар',
-    )
-    forecast_date = models.DateField(verbose_name='дата прогноза',)
-
-    class Meta:
-        ordering = ['forecast_date']
-        verbose_name = 'прогноз'
-        verbose_name_plural = 'прогнозы'
-
-
-class Forecast(models.Model):
-    '''Прогнозы'''
-    date = models.DateField(verbose_name='дата прогноза',)
-    target = models.DecimalField(
-        max_digits=6,
-        decimal_places=2,
-        verbose_name='цель',
-    )
-    forecast_sku_id = models.ForeignKey(
-        ForecastSku,
-        on_delete=models.CASCADE,
-        related_name='forecast',
-    )
-
-    class Meta:
-        ordering = ['-date']
+        ordering = ('st_id',)
 
 
 class Sales(models.Model):
-    '''Продажи факт'''
+    '''Магазин-товар-дата'''
     st_id = models.ForeignKey(
         Store,
         on_delete=models.CASCADE,
@@ -107,6 +67,19 @@ class Sales(models.Model):
         verbose_name='товар',
     )
     date = models.DateField(verbose_name='дата продаж',)
+
+    class Meta:
+        ordering = ('-date',)
+
+
+class SalesFact(models.Model):
+    '''Продажи факт'''
+    st_sku_date = models.ForeignKey(
+        Sales,
+        on_delete=models.CASCADE,
+        related_name='sales_store_date',
+        verbose_name='магазин-товар-дата',
+    )
     sales_type = models.IntegerField(verbose_name='тип продаж',)
     sales_units = models.DecimalField(
         max_digits=6,
@@ -130,4 +103,46 @@ class Sales(models.Model):
     )
 
     class Meta:
-        ordering = ('-date',)
+        ordering = ('st_sku_date',)
+
+
+class Forecast(models.Model):
+    '''Прогнозы'''
+    st_sku_date = models.ForeignKey(
+        Sales,
+        on_delete=models.CASCADE,
+        related_name='f_sales_store_date',
+        verbose_name='магазин-товар-дата',
+    )
+    sales_units = models.DecimalField(
+        max_digits=6,
+        decimal_places=1,
+        verbose_name='всего шт',
+    )
+    forecast_date = models.DateField(verbose_name='дата прогноза',)
+
+    class Meta:
+        ordering = ('-forecast_date',)
+
+
+class SalesDiff(models.Model):
+    '''Качество прогноза'''
+    st_sku_date = models.ForeignKey(
+        Sales,
+        on_delete=models.CASCADE,
+        related_name='d_sales_store_date',
+        verbose_name='магазин-товар-дата',
+    )
+    diff_sales_units = models.DecimalField(
+        max_digits=6,
+        decimal_places=1,
+        verbose_name='разница шт',
+    )
+    wape = models.DecimalField(
+        max_digits=6,
+        decimal_places=1,
+        verbose_name='wape',
+    )
+
+    class Meta:
+        ordering = ('st_sku_date',)
