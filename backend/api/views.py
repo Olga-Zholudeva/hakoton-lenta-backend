@@ -4,9 +4,10 @@ from rest_framework.permissions import SAFE_METHODS
 
 from api.serializers import (SalesSerializer, SalesPostSerializer,
                              StoreSerializer, SkuSerializer,
-                             ForecastSerializer, ForecastPostSerializer)
-from api.filters import SalesFilter, ForecastFilter
-from products.models import Sku, SalesFact, Store, Forecast
+                             ForecastSerializer, ForecastPostSerializer,
+                             SalesDiffSerializer)
+from api.filters import SalesFilter, ForecastFilter, SalesDiffFilter
+from products.models import Sku, SalesFact, Store, Forecast, SalesDiff
 
 
 class StoreViewSet(
@@ -17,6 +18,7 @@ class StoreViewSet(
     '''Обработчик для магазинов'''
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
+
 
 class SkuViewSet(
     mixins.CreateModelMixin,
@@ -58,3 +60,14 @@ class ForecastViewSet(
         if self.request.method in SAFE_METHODS:
             return ForecastSerializer
         return ForecastPostSerializer
+
+
+class SalesDiffViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    '''Обработчик для качества'''
+    queryset = SalesDiff.objects.all()
+    serializer_class = SalesDiffSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = SalesDiffFilter
