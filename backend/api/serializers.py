@@ -3,7 +3,12 @@ from datetime import date
 from django.db.models import Max
 from rest_framework import serializers
 
-from products.models import Sku, Store, Forecast, SalesFact, Sales
+from products.models import Sku, Store, Forecast, SalesFact, Sales, SalesDiff
+
+
+def set_diff(sale):
+    obj, created = SalesDiff.objects.get_or_create(st_sku_date=sale)
+    obj.save
 
 
 class SkuSerializer(serializers.ModelSerializer):
@@ -175,4 +180,50 @@ class SalesPostSerializer(serializers.ModelSerializer):
             sales_rub=validated_data['pr_sales_in_rub'],
             sales_run_promo=validated_data['pr_promo_sales_in_rub'],
         )
+        set_diff(obj)
         return sale
+
+
+class SalesDiffSerializer(serializers.ModelSerializer):
+    '''Сериализатор для вывода качества прогноза'''
+    store = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.st_id'
+    )
+    group = serializers.CharField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id.pr_group_id'
+    )
+    category = serializers.CharField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id.pr_cat_id'
+    )
+    subcategory = serializers.CharField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id.pr_subcat_id'
+    )
+    sku = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id'
+    )
+    date = serializers.DateField(
+        read_only=True,
+        source='st_sku_date.date',
+    )
+    sales_units = serializers.DecimalField(
+        read_only=True,
+        max_digits=6,
+        decimal_places=1,
+        source='st_sku_date.sales_store_date.sales_units',
+    )
+    forecast_units = serializers.DecimalField(
+        read_only=True,
+        max_digits=6,
+        decimal_places=1,
+        source='st_sku_date.f_sales_store_date.sales_units',
+    )
+
+    class Meta:
+        model = SalesDiff
+        fields = ('store', 'group', 'category', 'subcategory', 'sku', 'date',
+                  'sales_units', 'forecast_units', 'diff_sales_units', 'wape',)
