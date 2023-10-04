@@ -1,4 +1,4 @@
-from django.db.models import Max
+from django.db.models import Max, Sum
 from rest_framework import serializers
 
 from products.models import Sku, Store, Forecast, SalesFact
@@ -79,6 +79,33 @@ class ForecastSerializer(serializers.ModelSerializer):
         return ForecastSkuSerializer(forecast, many=True).data
 
 
+class ForecastPostSerializer(serializers.ModelSerializer):
+    store = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_id',
+    )
+    sku = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='pr_sku_id',
+    )
+    forecast_date = serializers.DateField()
+    forecast = ForecastSerializer(many=True,)
+
+    class Meta:
+        model = Forecast
+        fields = ('store', 'sku', 'forecast_date', 'forecast')
+
+    def create(self, validated_data):
+        all_forecast = validated_data.pop('forecast')
+        forecast_sku = ForecastSku.objects.create(
+            st_id=validated_data['store'],
+            pr_sku_id=validated_data['sku'],
+            forecast_date=validated_data['forecast_date']
+        )
+        set_forecast(forecast_sku, all_forecast)
+        return forecast_sku
+
+
 class SalesSerializer(serializers.ModelSerializer):
     '''Сериализатор факта продаж'''
     store = serializers.PrimaryKeyRelatedField(
@@ -93,5 +120,29 @@ class SalesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SalesFact
+        fields = ('store', 'sku', 'date', 'sales_type', 'sales_units',
+                  'sales_units_promo', 'sales_rub', 'sales_run_promo')
+
+
+class SalesPostSerializer(serializers.ModelSerializer):
+    '''Сериализатор загрузки факта продаж.'''
+    store = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_id',
+    )
+    sku = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='pr_sku_id',
+    )
+    date = serializers.DateField()
+    sales_type = serializers.IntegerField(min_value=0, max_value=1)
+    sales_units = serializers.DecimalField(max_digits=6, decimal_places=1)
+    sales_units_promo = serializers.DecimalField(max_digits=6,
+                                                 decimal_places=1)
+    sales_rub = serializers.DecimalField(max_digits=8, decimal_places=1)
+    sales_run_promo = serializers.DecimalField(max_digits=8, decimal_places=1)
+
+    class Meta:
+        model = Sales
         fields = ('store', 'sku', 'date', 'sales_type', 'sales_units',
                   'sales_units_promo', 'sales_rub', 'sales_run_promo')
