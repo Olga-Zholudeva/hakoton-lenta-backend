@@ -2,30 +2,30 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.permissions import SAFE_METHODS
 
-from api.serializers import (StoreSerializer, SkuSerializer, SalesSerializer,
-                             ForecastSerializer, SalesPostSerializer)
-from api.filters import ForecastFilter
-from products.models import Sku, Store, Forecast, SalesFact
+from api.serializers import (SalesSerializer, SalesPostSerializer,
+                             StoreSerializer, SkuSerializer,
+                             ForecastSerializer, ForecastPostSerializer)
+from api.filters import SalesFilter, ForecastFilter
+from products.models import Sku, Sales, Store, Forecast
 
 
-class SkuViewSet(mixins.ListModelMixin,nviewsets.GenericViewSet):
-    '''Обработчик для товаров.'''
-    queryset = Sku.objects.all()
-    serializer_class = SkuSerializer
-
-
-class ForecastViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    '''Обработчик для прогноза'''
-    queryset = Forecast.objects.all()
-    serializer_class = ForecastSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filterset_class = ForecastFilter
-
-
-class StoreViewSet(mixins.ListModelMixin,viewsets.GenericViewSet ):
-    '''Обработчик для магазинов.'''
+class StoreViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    '''Обработчик для магазинов'''
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
+
+class SkuViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    '''Обработчик для товаров'''
+    queryset = Sku.objects.all()
+    serializer_class = SkuSerializer
 
 
 class SalesViewSet(
@@ -33,7 +33,7 @@ class SalesViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet
 ):
-    '''Обработчик для фактических продаж.'''
+    '''Обработчик для фактических продаж'''
     queryset = SalesFact.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = SalesFilter
@@ -42,3 +42,20 @@ class SalesViewSet(
         if self.request.method in SAFE_METHODS:
             return SalesSerializer
         return SalesPostSerializer
+
+
+class ForecastViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    '''Обработчик для прогноза'''
+    queryset = Forecast.objects.all()
+    serializer_class = ForecastSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = ForecastFilter
+
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return ForecastSerializer
+        return ForecastPostSerializer
