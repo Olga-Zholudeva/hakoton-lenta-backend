@@ -118,7 +118,7 @@ class SalesSerializer(serializers.ModelSerializer):
         read_only=True,
         source='st_sku_date.pr_sku_id'
     )
-    date = serializers.DateTimeField(
+    date = serializers.DateField(
         source='st_sku_date.date',
         read_only=True,
     )
