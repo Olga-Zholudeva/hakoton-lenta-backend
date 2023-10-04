@@ -1,4 +1,4 @@
-from datetime.date import today
+from datetime import date
 
 from django.db.models import Max
 from rest_framework import serializers
@@ -103,7 +103,7 @@ class ForecastPostSerializer(serializers.ModelSerializer):
         forecast = Forecast.objects.create(
             st_sku_date=obj,
             sales_units=validated_data['target'],
-            forecast_date=today(),
+            forecast_date=date.today(),
         )
         return forecast
 
