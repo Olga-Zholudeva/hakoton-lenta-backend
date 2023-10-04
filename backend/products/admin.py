@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from products.models import Sku, Store, Forecast, Sales
+from products.models import Sku, Store, Forecast, SalesFact
 
 
 @admin.register(Sku)
@@ -24,7 +24,7 @@ class ForecastAdmin(admin.ModelAdmin):
     search_fields = ('forecast_date',)
 
 
-@admin.register(Sales)
+@admin.register(SalesFact)
 class SalesAdmin(admin.ModelAdmin):
     list_display = ('st_sku_date', 'sales_type', 'sales_units',
                     'sales_units_promo', 'sales_rub', 'sales_run_promo')
