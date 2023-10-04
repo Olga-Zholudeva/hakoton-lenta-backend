@@ -85,20 +85,14 @@ class ForecastSerializer(serializers.ModelSerializer):
 
 class ForecastPostSerializer(serializers.ModelSerializer):
     '''Сериализатор для загрузки прогноза продаж'''
-    st_id = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='st_id',
-    )
-    pr_sku_id = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='pr_sku_id',
-    )
+    st_id = serializers.PrimaryKeyRelatedField(read_only=True,)
+    pr_sku_id = serializers.PrimaryKeyRelatedField(read_only=True,)
     date = serializers.DateField()
     target = serializers.DecimalField(max_digits=6, decimal_places=1)
 
     class Meta:
         model = Forecast
-        fields = ('store', 'sku', 'forecast_date', 'forecast')
+        fields = ('st_id', 'pr_sku_id', 'date', 'target')
 
     def create(self, validated_data):
         obj, created = Sales.objects.get_or_create(
