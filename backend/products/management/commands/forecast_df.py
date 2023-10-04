@@ -54,7 +54,7 @@ class Command(BaseCommand):
                         forecast_list = []
                         count = 0
                 except Exception as error:
-                    logger.error(f'сбой в работе: {error}')
+                    logger.error(f'сбой в работе: {error}', exc_info=True)
             Sales.objects.bulk_create(sales_list, batch_size=1000)
             Forecast.objects.bulk_create(forecast_list, batch_size=1000)
             logger.info(f'загружено {count} строк')

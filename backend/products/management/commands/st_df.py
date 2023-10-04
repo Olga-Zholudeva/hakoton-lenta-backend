@@ -33,6 +33,6 @@ class Command(BaseCommand):
                     stores_list.append(store)
                     count += 1
                 except Exception as error:
-                    logger.error(f'сбой в работе: {error}')
+                    logger.error(f'сбой в работе: {error}', exc_info=True)
             Store.objects.bulk_create(stores_list, batch_size=1000)
             logger.info(f'загружено {count} строк')
