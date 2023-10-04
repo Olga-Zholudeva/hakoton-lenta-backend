@@ -46,7 +46,7 @@ class ForecastSkuSerializer(serializers.ModelSerializer):
 
 
 class ForecastSerializer(serializers.ModelSerializer):
-    '''Сериализатор для страницы с прогнозом продаж'''
+    '''Сериализатор для вывода прогноза продаж'''
     store = serializers.PrimaryKeyRelatedField(
         read_only=True,
         source='st_sku_date.st_id'
@@ -84,6 +84,7 @@ class ForecastSerializer(serializers.ModelSerializer):
 
 
 class ForecastPostSerializer(serializers.ModelSerializer):
+    '''Сериализатор для загрузки прогноза продаж'''
     st_id = serializers.PrimaryKeyRelatedField(
         read_only=True,
         source='st_id',
@@ -114,7 +115,7 @@ class ForecastPostSerializer(serializers.ModelSerializer):
 
 
 class SalesSerializer(serializers.ModelSerializer):
-    '''Сериализатор факта продаж'''
+    '''Сериализатор вывода факта продаж'''
     store = serializers.PrimaryKeyRelatedField(
         read_only=True,
         source='st_sku_date.st_id'
@@ -135,7 +136,7 @@ class SalesSerializer(serializers.ModelSerializer):
 
 
 class SalesPostSerializer(serializers.ModelSerializer):
-    '''Сериализатор загрузки факта продаж.'''
+    '''Сериализатор загрузки факта продаж'''
     st_id = serializers.PrimaryKeyRelatedField(
         read_only=True,
         source='st_sku_date.st_id'
