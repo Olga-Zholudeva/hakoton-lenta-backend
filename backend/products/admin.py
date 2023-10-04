@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from products.models import Sku, Store, ForecastSku, Forecast, Sales
+from products.models import Sku, Store, Forecast
 
 
 @admin.register(Sku)
@@ -18,20 +18,14 @@ class StoreAdmin(admin.ModelAdmin):
     search_fields = ('st_id', 'st_city_id', 'st_division_code')
 
 
-@admin.register(ForecastSku)
-class ForecastSkuAdmin(admin.ModelAdmin):
-    list_display = ('st_id', 'pr_sku_id', 'forecast_date')
-    search_fields = ('st_id', 'pr_sku_id', 'forecast_date')
-
-
 @admin.register(Forecast)
 class ForecastAdmin(admin.ModelAdmin):
-    list_display = ('date', 'target', 'forecast_sku_id')
-    search_fields = ('date',)
+    list_display = ('st_sku_date', 'sales_units', 'forecast_date')
+    search_fields = ('forecast_date',)
 
 
-@admin.register(Sales)
-class SalesAdmin(admin.ModelAdmin):
-    list_display = ('st_id', 'pr_sku_id', 'date', 'sales_type', 'sales_units',
-                    'sales_units_promo', 'sales_rub', 'sales_run_promo')
-    search_fields = ('st_id', 'pr_sku_id', 'date')
+# @admin.register(Sales)
+# class SalesAdmin(admin.ModelAdmin):
+#     list_display = ('st_id', 'pr_sku_id', 'date', 'sales_type', 'sales_units',
+#                     'sales_units_promo', 'sales_rub', 'sales_run_promo')
+#     search_fields = ('st_id', 'pr_sku_id', 'date')
