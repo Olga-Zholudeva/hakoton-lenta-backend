@@ -6,7 +6,7 @@ from api.serializers import (SalesSerializer, SalesPostSerializer,
                              StoreSerializer, SkuSerializer,
                              ForecastSerializer, ForecastPostSerializer)
 from api.filters import SalesFilter, ForecastFilter
-from products.models import Sku, Sales, Store, Forecast
+from products.models import Sku, SalesFact, Store, Forecast
 
 
 class StoreViewSet(
@@ -51,7 +51,6 @@ class ForecastViewSet(
 ):
     '''Обработчик для прогноза'''
     queryset = Forecast.objects.all()
-    serializer_class = ForecastSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ForecastFilter
 
