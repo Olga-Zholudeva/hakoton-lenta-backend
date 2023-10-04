@@ -30,7 +30,7 @@ class Command(BaseCommand):
                     store = all_stores.get(pk=st_id)
                     sku = all_sku.get(pk=pr_sku_id)
                     sale = all_sales.filter(st_id=store, pr_sku_id=sku,
-                                            date=date).get()
+                                            date=date)
                     if not sale:
                         sale = Sales(
                             st_id=store,
@@ -39,7 +39,7 @@ class Command(BaseCommand):
                         )
                         sales_list.append(sale)
                     forecast = Forecast(
-                        st_sku_date=sale,
+                        st_sku_date=sale.get(),
                         sales_units=pr_sales_in_units,
                         forecast_date=today,
                     )
