@@ -30,8 +30,10 @@ class Command(BaseCommand):
                     store = all_stores.get(pk=st_id)
                     sku = all_sku.get(pk=pr_sku_id)
                     sale = all_sales.filter(st_id=store, pr_sku_id=sku,
-                                            date=date).get()
-                    if not sale:
+                                            date=date)
+                    if sale:
+                        sale = sale.get()
+                    else:
                         sale = Sales(
                             st_id=store,
                             pr_sku_id=sku,

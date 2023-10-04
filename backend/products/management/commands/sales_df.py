@@ -21,21 +21,17 @@ class Command(BaseCommand):
             count = 0
             all_stores = Store.objects.all()
             all_sku = Sku.objects.all()
-            all_sales = Sales.objects.all()
             for row in tqdm(reader):
                 try:
                     st_id, pr_sku_id, date, pr_sales_type_id, pr_sales_in_units, pr_promo_sales_in_units, pr_sales_in_rub, pr_promo_sales_in_rub = row
                     store = all_stores.get(pk=st_id)
                     sku = all_sku.get(pk=pr_sku_id)
-                    sale = all_sales.filter(st_id=store, pr_sku_id=sku,
-                                            date=date).get()
-                    if not sale:
-                        sale = Sales(
-                            st_id=store,
-                            pr_sku_id=sku,
-                            date=date,
-                        )
-                        sales_list.append(sale)
+                    sale = Sales(
+                        st_id=store,
+                        pr_sku_id=sku,
+                        date=date,
+                    )
+                    sales_list.append(sale)
                     sale_fact = SalesFact(
                         st_sku_date=sale,
                         sales_type=pr_sales_type_id,
