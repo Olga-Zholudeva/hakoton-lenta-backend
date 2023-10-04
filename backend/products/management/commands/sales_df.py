@@ -16,7 +16,6 @@ class Command(BaseCommand):
             logger.info('старт загрузки данных')
             reader = csv.reader(f)
             next(reader)
-            sales_list = []
             sales_fact_list = []
             count = 0
             all_stores = Store.objects.all()
@@ -26,14 +25,13 @@ class Command(BaseCommand):
                     st_id, pr_sku_id, date, pr_sales_type_id, pr_sales_in_units, pr_promo_sales_in_units, pr_sales_in_rub, pr_promo_sales_in_rub = row
                     store = all_stores.get(pk=st_id)
                     sku = all_sku.get(pk=pr_sku_id)
-                    sale = Sales(
+                    obj, created = Sales.objects.get_or_create(
                         st_id=store,
                         pr_sku_id=sku,
                         date=date,
                     )
-                    sales_list.append(sale)
                     sale_fact = SalesFact(
-                        st_sku_date=sale,
+                        st_sku_date=obj,
                         sales_type=pr_sales_type_id,
                         sales_units=pr_sales_in_units,
                         sales_units_promo=pr_promo_sales_in_units,
@@ -43,15 +41,12 @@ class Command(BaseCommand):
                     sales_fact_list.append(sale_fact)
                     count += 1
                     if count > 9999:
-                        Sales.objects.bulk_create(sales_list, batch_size=1000)
                         SalesFact.objects.bulk_create(sales_fact_list,
                                                       batch_size=1000)
                         logger.info(f'загружено {count} строк')
-                        sales_list = []
                         sales_fact_list = []
                         count = 0
                 except Exception as error:
                     logger.error(f'сбой в работе: {error}', exc_info=True)
-            Sales.objects.bulk_create(sales_list, batch_size=1000)
             SalesFact.objects.bulk_create(sales_fact_list, batch_size=1000)
             logger.info(f'загружено {count} строк')
