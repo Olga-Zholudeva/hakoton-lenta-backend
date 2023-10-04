@@ -31,6 +31,6 @@ class Command(BaseCommand):
                     sku_list.append(sku)
                     count += 1
                 except Exception as error:
-                    logger.error(f'сбой в работе: {error}')
+                    logger.error(f'сбой в работе: {error}', exc_info=True)
             Sku.objects.bulk_create(sku_list, batch_size=1000)
             logger.info(f'загружено {count} строк')
