@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Sum
+from django.db.models.functions import Coalesce, Abs
 
 
 class Sku(models.Model):
@@ -146,3 +148,23 @@ class SalesDiff(models.Model):
 
     class Meta:
         ordering = ('st_sku_date',)
+
+    def save(self, *args, **kwargs):
+        sales_fact = SalesFact.objects.filter(
+            st_sku_date=self.st_sku_date
+        ).aggregate(
+            total_sales_units=Coalesce(Sum('sales_units'), 0.0)
+        )['total_sales_units']
+        forecast = Forecast.objects.filter(
+            st_sku_date=self.st_sku_date
+        ).first()
+        if forecast:
+            diff_sales_units = sales_fact - forecast.sales_units
+            wape = (Abs(sales_fact - forecast.sales_units) /
+                    forecast.sales_units) * 100
+        else:
+            diff_sales_units = sales_fact
+            wape = 100
+        self.diff_sales_units = round(diff_sales_units, 1)
+        self.wape = round(wape, 1)
+        super().save(*args, **kwargs)
