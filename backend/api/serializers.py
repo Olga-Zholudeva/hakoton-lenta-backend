@@ -237,7 +237,7 @@ class SalesDiffSerializer(serializers.ModelSerializer):
             total_sales_units=Coalesce(Sum('sales_units'), 0, output_field=models.DecimalField(max_digits=6, decimal_places=1))
         )['total_sales_units']
 
-    def get_sales_units(self, obj):
+    def get_forecast_units(self, obj):
         forecast = Forecast.objects.filter(st_sku_date=obj.st_sku_date).first()
         if forecast:
             forecast_units = forecast.sales_units
