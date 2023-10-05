@@ -118,7 +118,7 @@ class ForecastPostSerializer(serializers.ModelSerializer):
         )
         forecast = Forecast.objects.create(
             st_sku_date=obj,
-            sales_units=validated_data['target'],
+            sales_units=validated_data['sales_units'],
             forecast_date=date.today(),
         )
         return forecast
@@ -186,11 +186,11 @@ class SalesPostSerializer(serializers.ModelSerializer):
         )
         sale = SalesFact.objects.create(
             st_sku_date=obj,
-            sales_type=validated_data['pr_sales_type_id'],
-            sales_units=validated_data['pr_sales_in_units'],
-            sales_units_promo=validated_data['pr_promo_sales_in_units'],
-            sales_rub=validated_data['pr_sales_in_rub'],
-            sales_run_promo=validated_data['pr_promo_sales_in_rub'],
+            sales_type=validated_data['sales_type'],
+            sales_units=validated_data['sales_units'],
+            sales_units_promo=validated_data['sales_units_promo'],
+            sales_rub=validated_data['sales_rub'],
+            sales_run_promo=validated_data['sales_run_promo'],
         )
         # set_diff(obj)
         return sale
