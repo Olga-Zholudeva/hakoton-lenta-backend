@@ -28,7 +28,7 @@ class SkuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sku
         fields = ('pr_sku_id', 'pr_group_id', 'pr_cat_id', 'pr_subcat_id',
-                  'pr_uom_id',)
+                  'pr_uom_id')
 
 
 class StoreSerializer(serializers.ModelSerializer):
@@ -45,7 +45,7 @@ class StoreSerializer(serializers.ModelSerializer):
         model = Store
         fields = ('st_id', 'st_city_id', 'st_division_code',
                   'st_type_format_id', 'st_type_loc_id', 'st_type_size_id',
-                  'st_is_active',)
+                  'st_is_active')
 
 
 class ForecastSkuSerializer(serializers.ModelSerializer):
@@ -53,7 +53,7 @@ class ForecastSkuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Forecast
-        fields = ('date', 'sales_units',)
+        fields = ('date', 'sales_units')
 
 
 class ForecastSerializer(serializers.ModelSerializer):
@@ -80,7 +80,7 @@ class ForecastSerializer(serializers.ModelSerializer):
     class Meta:
         model = Forecast
         fields = ('store', 'group', 'category', 'subcategory',
-                  'sku', 'forecast',)
+                  'sku', 'forecast')
 
     def get_forecast(self, obj):
         last_forecast = Forecast.objects.aggregate(
@@ -116,12 +116,12 @@ class ForecastPostSerializer(serializers.ModelSerializer):
         obj, created = Sales.objects.get_or_create(
             st_id=validated_data['st_sku_date']['st_id'],
             pr_sku_id=validated_data['st_sku_date']['pr_sku_id'],
-            date=validated_data['st_sku_date']['date'],
+            date=validated_data['st_sku_date']['date']
         )
         forecast = Forecast.objects.create(
             st_sku_date=obj,
             sales_units=validated_data['sales_units'],
-            forecast_date=date.today(),
+            forecast_date=date.today()
         )
         return forecast
 
@@ -138,7 +138,7 @@ class SalesSerializer(serializers.ModelSerializer):
     )
     date = serializers.DateField(
         read_only=True,
-        source='st_sku_date.date',
+        source='st_sku_date.date'
     )
 
     class Meta:
@@ -184,7 +184,7 @@ class SalesPostSerializer(serializers.ModelSerializer):
         obj, created = Sales.objects.get_or_create(
             st_id=validated_data['st_sku_date']['st_id'],
             pr_sku_id=validated_data['st_sku_date']['pr_sku_id'],
-            date=validated_data['st_sku_date']['date'],
+            date=validated_data['st_sku_date']['date']
         )
         sale = SalesFact.objects.create(
             st_sku_date=obj,
@@ -192,7 +192,7 @@ class SalesPostSerializer(serializers.ModelSerializer):
             sales_units=validated_data['sales_units'],
             sales_units_promo=validated_data['sales_units_promo'],
             sales_rub=validated_data['sales_rub'],
-            sales_run_promo=validated_data['sales_run_promo'],
+            sales_run_promo=validated_data['sales_run_promo']
         )
         set_diff(obj)
         return sale
@@ -222,7 +222,7 @@ class SalesDiffSerializer(serializers.ModelSerializer):
     )
     date = serializers.DateField(
         read_only=True,
-        source='st_sku_date.date',
+        source='st_sku_date.date'
     )
     sales_units = serializers.SerializerMethodField()
     forecast_units = serializers.SerializerMethodField()
@@ -230,13 +230,17 @@ class SalesDiffSerializer(serializers.ModelSerializer):
     class Meta:
         model = SalesDiff
         fields = ('store', 'group', 'category', 'subcategory', 'sku', 'date',
-                  'sales_units', 'forecast_units', 'diff_sales_units', 'wape',)
+                  'sales_units', 'forecast_units', 'diff_sales_units', 'wape')
 
     def get_sales_units(self, obj):
         return SalesFact.objects.filter(st_sku_date=obj.st_sku_date).aggregate(
             total_sales_units=Coalesce(Sum('sales_units'), 0, output_field=models.DecimalField(max_digits=6, decimal_places=1))
         )['total_sales_units']
 
-
     def get_sales_units(self, obj):
-        return Forecast.objects.filter(st_sku_date=obj.st_sku_date).first().sales_units
+        forecast = Forecast.objects.filter(st_sku_date=obj.st_sku_date).first()
+        if forecast:
+            forecast_units = forecast.sales_units
+        else:
+            forecast_units = 0
+        return forecast_units
