@@ -161,7 +161,10 @@ class SalesDiff(models.Model):
                     max_digits=6,
                     decimal_places=1,
                 )
-            ), 0),
+            ), 0), output_field=models.DecimalField(
+                max_digits=6,
+                decimal_places=1,
+            )
         )['total_sales_units']
         forecast = Forecast.objects.filter(
             st_sku_date=self.st_sku_date
