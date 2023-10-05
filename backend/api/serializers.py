@@ -94,9 +94,14 @@ class ForecastSerializer(serializers.ModelSerializer):
 
 class ForecastPostSerializer(serializers.ModelSerializer):
     '''Сериализатор для загрузки прогноза продаж'''
-    st_id = serializers.CharField(max_length=200, source='st_sku_date.st_id')
-    pr_sku_id = serializers.CharField(max_length=200,
-                                      source='st_sku_date.pr_sku_id')
+    st_id = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.st_id'
+    )
+    pr_sku_id = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id'
+    )
     date = serializers.DateField(source='st_sku_date.date')
     target = serializers.DecimalField(max_digits=6, decimal_places=1)
 
@@ -105,12 +110,9 @@ class ForecastPostSerializer(serializers.ModelSerializer):
         fields = ('st_id', 'pr_sku_id', 'date', 'target')
 
     def create(self, validated_data):
-        logger.info(self, validated_data)
-        st = Store.objects.get(pk=validated_data['st_id'])
-        pr = Sku.objects.get(pk=validated_data['pr_sku_id'])
         obj, created = Sales.objects.get_or_create(
-            st_id=st,
-            pr_sku_id=pr,
+            st_id=validated_data['st_id'],
+            pr_sku_id=validated_data['pr_sku_id'],
             date=validated_data['date'],
         )
         forecast = Forecast.objects.create(
@@ -144,9 +146,14 @@ class SalesSerializer(serializers.ModelSerializer):
 
 class SalesPostSerializer(serializers.ModelSerializer):
     '''Сериализатор загрузки факта продаж'''
-    st_id = serializers.CharField(max_length=200, source='st_sku_date.st_id')
-    pr_sku_id = serializers.CharField(max_length=200,
-                                      source='st_sku_date.pr_sku_id')
+    st_id = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.st_id'
+    )
+    pr_sku_id = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id'
+    )
     date = serializers.DateField(source='st_sku_date.date')
     pr_sales_type_id = serializers.IntegerField(min_value=0, max_value=1)
     pr_sales_in_units = serializers.DecimalField(max_digits=6,
@@ -164,12 +171,9 @@ class SalesPostSerializer(serializers.ModelSerializer):
                   'pr_sales_in_rub', 'pr_promo_sales_in_rub')
 
     def create(self, validated_data):
-        logger.info(self, validated_data)
-        st = Store.objects.get(pk=validated_data['st_id'])
-        pr = Sku.objects.get(pk=validated_data['pr_sku_id'])
         obj, created = Sales.objects.get_or_create(
-            st_id=st,
-            pr_sku_id=pr,
+            st_id=validated_data['st_id'],
+            pr_sku_id=validated_data['pr_sku_id'],
             date=validated_data['date'],
         )
         sale = SalesFact.objects.create(
