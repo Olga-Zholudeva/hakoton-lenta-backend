@@ -1,6 +1,8 @@
 from datetime import date
 
-from django.db.models import Max
+from django.db import models
+from django.db.models import Max, Sum
+from django.db.models.functions import Coalesce
 from rest_framework import serializers
 
 from products.models import Sku, Store, Forecast, SalesFact, Sales, SalesDiff
@@ -222,20 +224,19 @@ class SalesDiffSerializer(serializers.ModelSerializer):
         read_only=True,
         source='st_sku_date.date',
     )
-    sales_units = serializers.DecimalField(
-        read_only=True,
-        max_digits=6,
-        decimal_places=1,
-        source='st_sku_date.sales_store_date.sales_units',
-    )
-    forecast_units = serializers.DecimalField(
-        read_only=True,
-        max_digits=6,
-        decimal_places=1,
-        source='st_sku_date.f_sales_store_date.sales_units',
-    )
+    sales_units = serializers.SerializerMethodField()
+    forecast_units = serializers.SerializerMethodField()
 
     class Meta:
         model = SalesDiff
         fields = ('store', 'group', 'category', 'subcategory', 'sku', 'date',
                   'sales_units', 'forecast_units', 'diff_sales_units', 'wape',)
+
+    def get_sales_units(self, obj):
+        return SalesFact.objects.filter(st_sku_date=obj.st_sku_date).aggregate(
+            total_sales_units=Coalesce(Sum('sales_units'), 0, output_field=models.DecimalField(max_digits=6, decimal_places=1))
+        )['total_sales_units']
+
+
+    def get_sales_units(self, obj):
+        return Forecast.objects.filter(st_sku_date=obj.st_sku_date).first().sales_units
