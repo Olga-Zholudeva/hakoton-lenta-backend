@@ -166,8 +166,13 @@ class SalesDiff(models.Model):
         ).first()
         if forecast:
             diff_sales_units = sales_fact - forecast.sales_units
-            wape = (Abs(sales_fact - forecast.sales_units) /
-                    forecast.sales_units) * 100
+            wape = (
+                Abs(sales_fact - forecast.sales_units,
+                    output_field=models.DecimalField(
+                        max_digits=6,
+                        decimal_places=1,
+                    )) / forecast.sales_units
+            ) * 100
         else:
             diff_sales_units = sales_fact
             wape = 100
