@@ -94,14 +94,8 @@ class ForecastSerializer(serializers.ModelSerializer):
 
 class ForecastPostSerializer(serializers.ModelSerializer):
     '''Сериализатор для загрузки прогноза продаж'''
-    st_id = serializers.PrimaryKeyRelatedField(
-        queryset=Store.objects.all(),
-        source='st_sku_date.st_id'
-    )
-    pr_sku_id = serializers.PrimaryKeyRelatedField(
-        queryset=Sku.objects.all(),
-        source='st_sku_date.pr_sku_id'
-    )
+    st_id = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all())
+    pr_sku_id = serializers.PrimaryKeyRelatedField(queryset=Sku.objects.all())
     date = serializers.DateField(source='st_sku_date.date')
     target = serializers.DecimalField(max_digits=6, decimal_places=1)
 
@@ -146,14 +140,8 @@ class SalesSerializer(serializers.ModelSerializer):
 
 class SalesPostSerializer(serializers.ModelSerializer):
     '''Сериализатор загрузки факта продаж'''
-    st_id = serializers.PrimaryKeyRelatedField(
-        queryset=Store.objects.all(),
-        source='st_sku_date.st_id'
-    )
-    pr_sku_id = serializers.PrimaryKeyRelatedField(
-        queryset=Sku.objects.all(),
-        source='st_sku_date.pr_sku_id'
-    )
+    st_id = serializers.PrimaryKeyRelatedField(queryset=Store.objects.all())
+    pr_sku_id = serializers.PrimaryKeyRelatedField(queryset=Sku.objects.all())
     date = serializers.DateField(source='st_sku_date.date')
     pr_sales_type_id = serializers.IntegerField(min_value=0, max_value=1)
     pr_sales_in_units = serializers.DecimalField(max_digits=6,
