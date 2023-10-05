@@ -161,6 +161,6 @@ class SalesDiff(models.Model):
         else:
             diff_sales_units = sales_fact
             wape = WAPE
-        self.diff_sales_units = round(diff_sales_units, 1)
-        self.wape = round(wape, 1)
+        self.diff_sales_units = diff_sales_units
+        self.wape = wape
         super().save(*args, **kwargs)
