@@ -184,7 +184,7 @@ class SalesPostSerializer(serializers.ModelSerializer):
             sales_rub=validated_data['pr_sales_in_rub'],
             sales_run_promo=validated_data['pr_promo_sales_in_rub'],
         )
-        set_diff(obj)
+        # set_diff(obj)
         return sale
 
 
