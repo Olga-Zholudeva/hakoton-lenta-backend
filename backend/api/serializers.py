@@ -103,7 +103,8 @@ class ForecastPostSerializer(serializers.ModelSerializer):
         source='st_sku_date.pr_sku_id'
     )
     date = serializers.DateField(source='st_sku_date.date')
-    target = serializers.DecimalField(max_digits=6, decimal_places=1)
+    target = serializers.DecimalField(max_digits=6, decimal_places=1,
+                                      source='sales_units')
 
     class Meta:
         model = Forecast
@@ -155,14 +156,21 @@ class SalesPostSerializer(serializers.ModelSerializer):
         source='st_sku_date.pr_sku_id'
     )
     date = serializers.DateField(source='st_sku_date.date')
-    pr_sales_type_id = serializers.IntegerField(min_value=0, max_value=1)
+    pr_sales_type_id = serializers.IntegerField(min_value=0, max_value=1,
+                                                source='sales_type')
     pr_sales_in_units = serializers.DecimalField(max_digits=6,
-                                                 decimal_places=1)
-    pr_promo_sales_in_units = serializers.DecimalField(max_digits=6,
-                                                       decimal_places=1)
-    pr_sales_in_rub = serializers.DecimalField(max_digits=8, decimal_places=1)
+                                                 decimal_places=1,
+                                                 source='sales_units')
+    pr_promo_sales_in_units = serializers.DecimalField(
+        max_digits=6,
+        decimal_places=1,
+        source='sales_units_promo'
+    )
+    pr_sales_in_rub = serializers.DecimalField(max_digits=8, decimal_places=1,
+                                               source='sales_rub')
     pr_promo_sales_in_rub = serializers.DecimalField(max_digits=8,
-                                                     decimal_places=1)
+                                                     decimal_places=1,
+                                                     source='sales_run_promo')
 
     class Meta:
         model = SalesFact
