@@ -95,9 +95,11 @@ class ForecastSerializer(serializers.ModelSerializer):
 class ForecastPostSerializer(serializers.ModelSerializer):
     '''Сериализатор для загрузки прогноза продаж'''
     st_id = serializers.PrimaryKeyRelatedField(
+        queryset=Store.objects.all(),
         source='st_sku_date.st_id'
     )
     pr_sku_id = serializers.PrimaryKeyRelatedField(
+        queryset=Sku.objects.all(),
         source='st_sku_date.pr_sku_id'
     )
     date = serializers.DateField()
@@ -145,9 +147,11 @@ class SalesSerializer(serializers.ModelSerializer):
 class SalesPostSerializer(serializers.ModelSerializer):
     '''Сериализатор загрузки факта продаж'''
     st_id = serializers.PrimaryKeyRelatedField(
+        queryset=Store.objects.all(),
         source='st_sku_date.st_id'
     )
     pr_sku_id = serializers.PrimaryKeyRelatedField(
+        queryset=Sku.objects.all(),
         source='st_sku_date.pr_sku_id'
     )
     date = serializers.DateField()
@@ -180,7 +184,7 @@ class SalesPostSerializer(serializers.ModelSerializer):
             sales_rub=validated_data['pr_sales_in_rub'],
             sales_run_promo=validated_data['pr_promo_sales_in_rub'],
         )
-        # set_diff(obj)
+        set_diff(obj)
         return sale
 
 
