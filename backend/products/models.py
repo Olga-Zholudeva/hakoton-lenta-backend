@@ -3,6 +3,9 @@ from django.db.models import Sum
 from django.db.models.functions import Coalesce, Abs
 
 
+WAPE = 100
+
+
 class Sku(models.Model):
     '''Товар'''
     pr_sku_id = models.CharField(
@@ -154,12 +157,11 @@ class SalesDiff(models.Model):
             st_sku_date=self.st_sku_date
         ).aggregate(
             total_sales_units=Coalesce(Sum(
-                'sales_units',
-                output_field=models.DecimalField(
+                'sales_units', output_field=models.DecimalField(
                     max_digits=6,
                     decimal_places=1,
                 )
-            ), 0.0),
+            ), 0),
         )['total_sales_units']
         forecast = Forecast.objects.filter(
             st_sku_date=self.st_sku_date
@@ -167,15 +169,14 @@ class SalesDiff(models.Model):
         if forecast:
             diff_sales_units = sales_fact - forecast.sales_units
             wape = (
-                Abs(sales_fact - forecast.sales_units,
-                    output_field=models.DecimalField(
-                        max_digits=6,
-                        decimal_places=1,
-                    )) / forecast.sales_units
-            ) * 100
+                Abs(diff_sales_units, output_field=models.DecimalField(
+                    max_digits=6,
+                    decimal_places=1,
+                )) / forecast.sales_units
+            ) * WAPE
         else:
             diff_sales_units = sales_fact
-            wape = 100
+            wape = WAPE
         self.diff_sales_units = round(diff_sales_units, 1)
         self.wape = round(wape, 1)
         super().save(*args, **kwargs)
