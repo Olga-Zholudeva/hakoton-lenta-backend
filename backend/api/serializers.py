@@ -104,7 +104,7 @@ class ForecastPostSerializer(serializers.ModelSerializer):
         fields = ('st_id', 'pr_sku_id', 'date', 'target')
 
     def create(self, validated_data):
-        logger.info(validated_data)
+        logger.info(self, validated_data)
         st = Store.objects.get(pk=validated_data['st_id'])
         pr = Sku.objects.get(pk=validated_data['pr_sku_id'])
         obj, created = Sales.objects.get_or_create(
@@ -162,9 +162,12 @@ class SalesPostSerializer(serializers.ModelSerializer):
                   'pr_sales_in_rub', 'pr_promo_sales_in_rub')
 
     def create(self, validated_data):
+        logger.info(self, validated_data)
+        st = Store.objects.get(pk=validated_data['st_id'])
+        pr = Sku.objects.get(pk=validated_data['pr_sku_id'])
         obj, created = Sales.objects.get_or_create(
-            st_id=validated_data['st_id'],
-            pr_sku_id=validated_data['pr_sku_id'],
+            st_id=st,
+            pr_sku_id=pr,
             date=validated_data['date'],
         )
         sale = SalesFact.objects.create(
