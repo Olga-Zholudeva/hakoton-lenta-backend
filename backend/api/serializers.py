@@ -143,7 +143,7 @@ class SalesSerializer(serializers.ModelSerializer):
 
 class SalesPostSerializer(serializers.ModelSerializer):
     '''Сериализатор загрузки факта продаж'''
-    st_id = serializers.CharFieldCharField(max_length=200)
+    st_id = serializers.CharField(max_length=200)
     pr_sku_id = serializers.CharField(max_length=200)
     date = serializers.DateField()
     pr_sales_type_id = serializers.IntegerField(min_value=0, max_value=1)
