@@ -39,6 +39,8 @@ class SalesViewSet(
     queryset = SalesFact.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = SalesFilter
+    filterset_fields = ['city', 'store', 'sku', 'group',
+                        'category', 'subcategory', 'date_from', 'date_to']
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
@@ -55,6 +57,8 @@ class ForecastViewSet(
     queryset = Forecast.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ForecastFilter
+    filterset_fields = ['city', 'store', 'sku', 'group',
+                        'category', 'subcategory', 'date_from', 'date_to']
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
@@ -71,3 +75,5 @@ class SalesDiffViewSet(
     serializer_class = SalesDiffSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = SalesDiffFilter
+    filterset_fields = ['city', 'store', 'sku', 'group',
+                        'category', 'subcategory', 'date_from', 'date_to']

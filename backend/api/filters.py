@@ -4,66 +4,72 @@ from products.models import SalesFact, Forecast, SalesDiff
 
 
 class SalesFilter(FilterSet):
-    st_city_id = filters.CharFilter(
+    city = filters.CharFilter(
         field_name='st_sku_date__st_id__st_city_id'
     )
-    st_id = filters.CharFilter(field_name='st_sku_date__st_id')
-    pr_sku_id = filters.CharFilter(field_name='st_sku_date__pr_sku_id')
-    pr_group_id = filters.CharFilter(
+    store = filters.CharFilter(field_name='st_sku_date__st_id')
+    sku = filters.CharFilter(field_name='st_sku_date__pr_sku_id')
+    group = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_group_id'
     )
-    pr_cat_id = filters.CharFilter(
+    category = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_cat_id'
     )
-    pr_subcat_id = filters.CharFilter(
+    subcategory = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_subcat_id'
     )
+    date_from = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='gte')
+    date_to = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='lte')
 
     class Meta:
         model = SalesFact
-        fields = ['st_city_id', 'st_id', 'pr_sku_id', 'pr_group_id',
-                  'pr_cat_id', 'pr_subcat_id']
+        fields = ['city', 'store', 'sku', 'group',
+                  'category', 'subcategory', 'date_from', 'date_to']
 
 
 class ForecastFilter(FilterSet):
-    st_city_id = filters.CharFilter(
+    city = filters.CharFilter(
         field_name='st_sku_date__st_id__st_city_id'
     )
-    st_id = filters.CharFilter(field_name='st_sku_date__st_id')
-    pr_sku_id = filters.CharFilter(field_name='st_sku_date__pr_sku_id')
-    pr_group_id = filters.CharFilter(
+    store = filters.CharFilter(field_name='st_sku_date__st_id')
+    sku = filters.CharFilter(field_name='st_sku_date__pr_sku_id')
+    group = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_group_id'
     )
-    pr_cat_id = filters.CharFilter(
+    category = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_cat_id'
     )
-    pr_subcat_id = filters.CharFilter(
+    subcategory = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_subcat_id'
     )
+    date_from = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='gte')
+    date_to = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='lte')
 
     class Meta:
         model = Forecast
-        fields = ['st_city_id', 'st_id', 'pr_sku_id', 'pr_group_id',
-                  'pr_cat_id', 'pr_subcat_id']
+        fields = ['city', 'store', 'sku', 'group',
+                  'category', 'subcategory', 'date_from', 'date_to']
 
 
 class SalesDiffFilter(FilterSet):
-    st_city_id = filters.CharFilter(
+    city = filters.CharFilter(
         field_name='st_sku_date__st_id__st_city_id'
     )
-    st_id = filters.CharFilter(field_name='st_sku_date__st_id')
-    pr_sku_id = filters.CharFilter(field_name='st_sku_date__pr_sku_id')
-    pr_group_id = filters.CharFilter(
+    store = filters.CharFilter(field_name='st_sku_date__st_id')
+    sku = filters.CharFilter(field_name='st_sku_date__pr_sku_id')
+    group = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_group_id'
     )
-    pr_cat_id = filters.CharFilter(
+    category = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_cat_id'
     )
-    pr_subcat_id = filters.CharFilter(
+    subcategory = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_subcat_id'
     )
+    date_from = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='gte')
+    date_to = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='lte')
 
     class Meta:
         model = SalesDiff
-        fields = ['st_city_id', 'st_id', 'pr_sku_id', 'pr_group_id',
-                  'pr_cat_id', 'pr_subcat_id']
+        fields = ['city', 'store', 'sku', 'group',
+                  'category', 'subcategory', 'date_from', 'date_to']
