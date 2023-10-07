@@ -159,11 +159,9 @@ REST_FRAMEWORK = {
     'SEARCH_PARAM': 'name'
 }
 
-CORS_URLS_REGEX = r'^/api/.*$'
-CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
-CORS_ALLOW_HEADERS = ['*']
-CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://localhost:5173']  # хост для фронта
+# CORS_URLS_REGEX = r'^/api/.*$'
+# CORS_ALLOWED_ORIGINS = ['http://localhost:3000']  # хост для фронта
+CORS_ALLOW_ALL_ORIGINS = True
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
