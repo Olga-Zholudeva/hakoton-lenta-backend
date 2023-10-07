@@ -1,10 +1,15 @@
-from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
+from django.db.models import Max
+from django_filters.rest_framework import DjangoFilterBackend
+
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS
+from rest_framework.response import Response
+
 from openpyxl import Workbook
-from django.db.models import Max
+from openpyxl.utils import get_column_letter
+from openpyxl.writer.excel import save_virtual_workbook
 
 from api.serializers import (SalesSerializer, SalesPostSerializer,
                              StoreSerializer, SkuSerializer,
@@ -12,7 +17,6 @@ from api.serializers import (SalesSerializer, SalesPostSerializer,
                              SalesDiffSerializer)
 from api.filters import SalesFilter, ForecastFilter, SalesDiffFilter
 from products.models import Sku, SalesFact, Store, Forecast, SalesDiff
-
 
 
 class StoreViewSet(
@@ -175,3 +179,31 @@ class SalesDiffViewSet(
     filterset_class = SalesDiffFilter
     filterset_fields = ['city', 'store', 'sku', 'group',
                         'category', 'subcategory', 'date_from', 'date_to']
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        if 'format' in request.GET and request.GET['format'].lower() == 'excel':
+            serializer = self.get_serializer(queryset, many=True)
+            workbook = openpyxl.Workbook()
+            worksheet = workbook.active
+
+            headers = serializer.fields.keys()
+            for col_num, header in enumerate(headers, 1):
+                column_letter = get_column_letter(col_num)
+                worksheet.cell(row=1, column=col_num, value=header)
+
+            for row_num, row_data in enumerate(serializer.data, 2):
+                for col_num, field_name in enumerate(headers, 1):
+                    column_letter = get_column_letter(col_num)
+                    cell_value = row_data[field_name]
+                    worksheet.cell(row=row_num, column=col_num, value=cell_value)
+
+            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename="forecast.xlsx"'
+            response.write(save_virtual_workbook(workbook))
+            return response
+
+        else:
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
