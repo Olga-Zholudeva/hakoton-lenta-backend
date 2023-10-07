@@ -9,8 +9,7 @@ from rest_framework.response import Response
 
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
-from openpyxl.writer.excel import save_virtual_workbook
-
+from openpyxl.writer.excel import save_workbook
 
 from api.serializers import (SalesSerializer, SalesPostSerializer,
                              StoreSerializer, SkuSerializer,
@@ -198,11 +197,12 @@ class SalesDiffViewSet(
                 for col_num, field_name in enumerate(headers, 1):
                     column_letter = get_column_letter(col_num)
                     cell_value = row_data[field_name]
-                    worksheet.cell(row=row_num, column=col_num, value=cell_value)
+                    worksheet.cell(row=row_num, column=col_num,
+                                   value=cell_value)
 
             response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             response['Content-Disposition'] = 'attachment; filename="forecast.xlsx"'
-            response.write(save_virtual_workbook(workbook))
+            response.write(save_workbook(workbook))
             return response
 
         else:
