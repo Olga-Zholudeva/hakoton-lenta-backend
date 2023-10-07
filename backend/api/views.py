@@ -18,7 +18,6 @@ class StoreViewSet(
     '''Обработчик для магазинов'''
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class SkuViewSet(
