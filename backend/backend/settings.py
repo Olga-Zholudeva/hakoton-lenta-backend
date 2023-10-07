@@ -158,13 +158,14 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'SEARCH_PARAM': 'name'
 }
-
+'''
 CORS_URLS_REGEX = r'^/api/.*$'
 CORS_ALLOW_METHODS = ['GET', 'POST', 'OPTIONS']
 CORS_ALLOW_HEADERS = ['DNT','User-Agent','X-Requested-With',
                       'If-Modified-Since','Cache-Control','Content-Type',
                       'Range','Authorization','X-CSRFToken','accept']
-CORS_ORIGIN_ALLOW_ALL = True
+'''
+CORS_ALLOW_ALL_ORIGINS = True
 # CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://localhost:5173']  # хост для фронта
 
 DJOSER = {
