@@ -261,7 +261,7 @@ class SkuFilterSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         queryset = Sku.objects.values_list('pr_group_id', flat=True).distinct()
-        data['pr_group_id'] = list(queryset)
+        data['pr_group_id'] = list(set(queryset))
         return data
 
 
