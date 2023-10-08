@@ -44,7 +44,7 @@ class StoreFilterViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet
 ):
-    '''Обработчик для магазинов'''
+    '''Фильтр для магазинов'''
     queryset = Store.objects.all()
     serializer_class = StoreFilterSerializer
 
@@ -53,7 +53,7 @@ class SkuFilterViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet
 ):
-    '''Обработчик для товаров'''
+    '''Фильтр для товаров'''
     queryset = Sku.objects.all()
     serializer_class = SkuFilterSerializer
 

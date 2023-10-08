@@ -252,19 +252,16 @@ class SalesDiffSerializer(serializers.ModelSerializer):
 
 
 class SkuFilterSerializer(serializers.ModelSerializer):
-    pr_sku_id = serializers.CharField(source='pk')
+    pr_group_id = serializers.CharField()
 
     class Meta:
         model = Sku
-        fields = ('pr_sku_id', 'pr_group_id', 'pr_cat_id', 'pr_subcat_id',
-                  'pr_uom_id')
+        fields = ('pr_group_id',)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        for key in data:
-            if key != 'pr_sku_id':
-                queryset = Sku.objects.values_list(key, flat=True).distinct()
-                data[key] = list(queryset)
+        queryset = Sku.objects.values_list('pr_group_id', flat=True).distinct()
+        data['pr_group_id'] = list(queryset)
         return data
 
 
