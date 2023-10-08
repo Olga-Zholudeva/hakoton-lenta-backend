@@ -294,7 +294,7 @@ class StoreFilterSerializer(serializers.ModelSerializer):
 
     def get_st_type_format_id(self, obj):
         queryset = Store.objects.values_list('st_type_format_id', flat=True).distinct()
-        return list(queryset))
+        return list(queryset)
 
     def get_st_type_loc_id(self, obj):
         queryset = Store.objects.values_list('st_type_loc_id', flat=True).distinct()
