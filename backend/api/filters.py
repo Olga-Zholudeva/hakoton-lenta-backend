@@ -42,13 +42,19 @@ class ForecastFilter(FilterSet):
     subcategory = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_subcat_id'
     )
+
+    class Meta:
+        model = Forecast
+        fields = ['city', 'store', 'sku', 'group', 'category', 'subcategory']
+
+
+class ForecastSkuFilter(filters.FilterSet):
     date_from = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='gte')
     date_to = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='lte')
 
     class Meta:
         model = Forecast
-        fields = ['city', 'store', 'sku', 'group',
-                  'category', 'subcategory', 'date_from', 'date_to']
+        fields = ['date_from', 'date_to']
 
 
 class SalesDiffFilter(FilterSet):
