@@ -266,7 +266,13 @@ class SkuFilterSerializer(serializers.ModelSerializer):
 
 
 class StoreFilterSerializer(serializers.ModelSerializer):
-    st_id = serializers.CharField(source='pk')
+    st_id = serializers.SerializerMethodField()
+    st_city_id = serializers.SerializerMethodField()
+    st_division_code = serializers.SerializerMethodField()
+    st_type_format_id = serializers.SerializerMethodField()
+    st_type_loc_id = serializers.SerializerMethodField()
+    st_type_size_id = serializers.SerializerMethodField()
+    st_is_active = serializers.SerializerMethodField()
 
     class Meta:
         model = Store
@@ -274,10 +280,30 @@ class StoreFilterSerializer(serializers.ModelSerializer):
                   'st_type_format_id', 'st_type_loc_id',
                   'st_type_size_id', 'st_is_active')
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        for key in data:
-            if key != 'st_id':
-                queryset = Store.objects.values_list(key, flat=True).distinct()
-                data[key] = list(queryset)
-        return data
+    def get_st_id(self, obj):
+        queryset = Store.objects.values_list('st_id', flat=True).distinct()
+        return list(queryset)
+
+    def get_st_city_id(self, obj):
+        queryset = Store.objects.values_list('st_city_id', flat=True).distinct()
+        return list(queryset)
+
+    def get_st_division_code(self, obj):
+        queryset = Store.objects.values_list('st_division_code', flat=True).distinct()
+        return list(queryset)
+
+    def get_st_type_format_id(self, obj):
+        queryset = Store.objects.values_list('st_type_format_id', flat=True).distinct()
+        return list(queryset))
+
+    def get_st_type_loc_id(self, obj):
+        queryset = Store.objects.values_list('st_type_loc_id', flat=True).distinct()
+        return list(queryset)
+
+    def get_st_type_size_id(self, obj):
+        queryset = Store.objects.values_list('st_type_size_id', flat=True).distinct()
+        return list(queryset)
+
+    def get_st_is_active(self, obj):
+        queryset = Store.objects.values_list('st_is_active', flat=True).distinct()
+        return list(queryset)
