@@ -47,7 +47,7 @@ class StoreSerializer(serializers.ModelSerializer):
                   'st_type_format_id', 'st_type_loc_id', 'st_type_size_id',
                   'st_is_active')
 
-
+'''
 class ForecastSkuSerializer(serializers.ModelSerializer):
     date = serializers.DateField(read_only=True, source='st_sku_date.date')
 
@@ -92,7 +92,7 @@ class ForecastSerializer(serializers.ModelSerializer):
             st_sku_date__pr_sku_id=obj.st_sku_date.pr_sku_id
         )
         return ForecastSkuSerializer(forecast, many=True).data
-
+'''
 
 class ForecastPostSerializer(serializers.ModelSerializer):
     '''Сериализатор для загрузки прогноза продаж'''
@@ -251,59 +251,88 @@ class SalesDiffSerializer(serializers.ModelSerializer):
         return forecast_units
 
 
-class SkuFilterSerializer(serializers.ModelSerializer):
-    pr_group_id = serializers.CharField()
+class ForecastSkuSerializer(serializers.ModelSerializer):
+    date = serializers.DateField(read_only=True, source='st_sku_date.date')
 
     class Meta:
-        model = Sku
-        fields = ('pr_group_id',)
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        queryset = Sku.objects.values_list('pr_group_id', flat=True).distinct()
-        data['pr_group_id'] = list(set(queryset))
-        return data
+        model = Forecast
+        fields = ('date', 'sales_units')
 
 
-class StoreFilterSerializer(serializers.ModelSerializer):
-    st_id = serializers.SerializerMethodField()
-    st_city_id = serializers.SerializerMethodField()
-    st_division_code = serializers.SerializerMethodField()
-    st_type_format_id = serializers.SerializerMethodField()
-    st_type_loc_id = serializers.SerializerMethodField()
-    st_type_size_id = serializers.SerializerMethodField()
-    st_is_active = serializers.SerializerMethodField()
+class FSkuSerializer(serializers.ModelSerializer):
+    sku = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id'
+    )
+    forecast = serializers.SerializerMethodField()
 
     class Meta:
-        model = Store
-        fields = ('st_id', 'st_city_id', 'st_division_code',
-                  'st_type_format_id', 'st_type_loc_id',
-                  'st_type_size_id', 'st_is_active')
+        model = Forecast
+        fields = ('sku', 'forecast')
 
-    def get_st_id(self, obj):
-        queryset = Store.objects.values_list('st_id', flat=True).distinct()
-        return list(queryset)
+    def get_forecast(self, obj):
+        last_forecast = Forecast.objects.aggregate(
+            Max('forecast_date')
+        )['forecast_date__max']
+        forecast = Forecast.objects.filter(
+            forecast_date=last_forecast,
+            st_sku_date__st_id=obj.st_sku_date.st_id,
+            st_sku_date__pr_sku_id=obj.st_sku_date.pr_sku_id
+        )
+        return ForecastSkuSerializer(forecast, many=True).data
 
-    def get_st_city_id(self, obj):
-        queryset = Store.objects.values_list('st_city_id', flat=True).distinct()
-        return list(queryset)
 
-    def get_st_division_code(self, obj):
-        queryset = Store.objects.values_list('st_division_code', flat=True).distinct()
-        return list(queryset)
+class SubcategorySerializer(serializers.ModelSerializer):
+    subcategory = serializers.CharField(
+        source='st_sku_date.pr_sku_id.pr_subcat_id'
+    )
+    sku = FSkuSerializer(read_only=True)
 
-    def get_st_type_format_id(self, obj):
-        queryset = Store.objects.values_list('st_type_format_id', flat=True).distinct()
-        return list(queryset))
+    class Meta:
+        model = Forecast
+        fields = ('subcategory', 'sku')
 
-    def get_st_type_loc_id(self, obj):
-        queryset = Store.objects.values_list('st_type_loc_id', flat=True).distinct()
-        return list(queryset)
 
-    def get_st_type_size_id(self, obj):
-        queryset = Store.objects.values_list('st_type_size_id', flat=True).distinct()
-        return list(queryset)
+class CategorySerializer(serializers.ModelSerializer):
+    category = serializers.CharField(
+        source='st_sku_date.pr_sku_id.pr_cat_id'
+    )
+    subcategory = SubcategorySerializer(read_only=True)
 
-    def get_st_is_active(self, obj):
-        queryset = Store.objects.values_list('st_is_active', flat=True).distinct()
-        return list(queryset)
+    class Meta:
+        model = Forecast
+        fields = ('category', 'subcategory')
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    group = serializers.CharField(
+        source='st_sku_date.pr_sku_id.pr_group_id'
+    )
+    category =CategorySerializer(read_only=True)
+
+    class Meta:
+        model = Forecast
+        fields = ('group', 'category')
+
+
+class FStoreSerializer(serializers.ModelSerializer):
+    store = serializers.PrimaryKeyRelatedField(
+        read_only=True, source='st_sku_date.st_id'
+    )
+    group = GroupSerializer(read_only=True)
+
+    class Meta:
+        model = Forecast
+        fields = ('store', 'group')
+
+
+class ForecastSerializer(serializers.ModelSerializer):
+    '''Сериализатор для вывода прогноза продаж'''
+    city = serializers.CharField(
+        source='st_sku_date.st_id.st_city_id'
+    )
+    store = FStoreSerializer(read_only=True)
+
+    class Meta:
+        model = Forecast
+        fields = ('city', 'store')
