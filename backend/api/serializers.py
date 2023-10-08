@@ -252,30 +252,6 @@ class SalesDiffSerializer(serializers.ModelSerializer):
 
 
 class NewForecastSerializer(serializers.ModelSerializer):
-    '''Сериализатор для вывода прогноза продаж'''
-    store = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='st_sku_date.st_id'
-    )
-    group = serializers.CharField(
-        source='st_sku_date.pr_sku_id.pr_group_id'
-    )
-    category = serializers.CharField(
-        source='st_sku_date.pr_sku_id.pr_cat_id'
-    )
-    subcategory = serializers.CharField(
-        source='st_sku_date.pr_sku_id.pr_subcat_id'
-    )
-    sku = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='st_sku_date.pr_sku_id'
-    )
-    date = serializers.DateField(
-        read_only=True,
-        source='st_sku_date.date'
-    )
-
     class Meta:
         model = Forecast
-        fields = ('store', 'group', 'category', 'subcategory',
-                  'sku', 'forecast_date', 'date', 'sales_units')
+        fields = ('st_sku_date', 'sales_units', 'forecast_date')
