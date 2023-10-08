@@ -17,6 +17,11 @@ services:
       - ../.env
     depends_on:
       - db
+  ml:
+    image: vdol22/lenta_model:lenta_model_11
+    restart: always
+    volumes:
+      - ml_value:/lenta_app/ml/
   nginx:
     image: nginx:1.19.3-alpine
     restart: always
@@ -31,3 +36,4 @@ services:
 volumes:
   static_value:
   db_data:
+  ml_value:
