@@ -249,3 +249,42 @@ class SalesDiffSerializer(serializers.ModelSerializer):
         else:
             forecast_units = 0
         return forecast_units
+
+
+class NewForecastSerializer(serializers.ModelSerializer):
+    '''Сериализатор для вывода прогноза продаж'''
+    store = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.st_id'
+    )
+    group = serializers.CharField(
+        source='st_sku_date.pr_sku_id.pr_group_id'
+    )
+    category = serializers.CharField(
+        source='st_sku_date.pr_sku_id.pr_cat_id'
+    )
+    subcategory = serializers.CharField(
+        source='st_sku_date.pr_sku_id.pr_subcat_id'
+    )
+    sku = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id'
+    )
+    date = serializers.DateField(
+        read_only=True,
+        source='st_sku_date.date'
+    )
+    sales_units = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Forecast
+        fields = ('store', 'group', 'category', 'subcategory',
+                  'sku', 'forecast_date', 'date', 'sales_units')
+
+    def get_sales_units(self, obj):
+        forecast = Forecast.objects.filter(st_sku_date=obj.st_sku_date).first()
+        if forecast:
+            forecast_units = forecast.sales_units
+        else:
+            forecast_units = 0
+        return forecast_units
