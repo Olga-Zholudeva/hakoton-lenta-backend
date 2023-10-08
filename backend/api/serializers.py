@@ -274,17 +274,8 @@ class NewForecastSerializer(serializers.ModelSerializer):
         read_only=True,
         source='st_sku_date.date'
     )
-    sales_units = serializers.SerializerMethodField()
 
     class Meta:
         model = Forecast
         fields = ('store', 'group', 'category', 'subcategory',
                   'sku', 'forecast_date', 'date', 'sales_units')
-
-    def get_sales_units(self, obj):
-        forecast = Forecast.objects.filter(st_sku_date=obj.st_sku_date).first()
-        if forecast:
-            forecast_units = forecast.sales_units
-        else:
-            forecast_units = 0
-        return forecast_units
