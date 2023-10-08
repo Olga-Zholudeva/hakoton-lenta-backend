@@ -215,5 +215,5 @@ class NewForecastViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = NewForecastSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ForecastFilter
-    filterset_fields = ['city', 'store', 'sku', 'group',
-                        'category', 'subcategory', 'date_from', 'date_to']
+    filterset_fields = ['city', 'store', 'sku', 'group', 'category',
+                        'subcategory', 'date_from', 'date_to', 'forecast_date']
