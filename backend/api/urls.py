@@ -11,7 +11,7 @@ router.register('categories', SkuViewSet)
 router.register('shops', StoreViewSet)
 router.register('sales', SalesViewSet)
 router.register('forecast', ForecastViewSet)
-router.register('newforecast', NewForecastViewSet)
+# router.register('newforecast', NewForecastViewSet)
 router.register('salesdiff', SalesDiffViewSet)
 
 urlpatterns = [
