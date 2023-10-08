@@ -251,84 +251,8 @@ class SalesDiffSerializer(serializers.ModelSerializer):
         return forecast_units
 
 
-<<<<<<< HEAD
 from itertools import groupby
 from django.db.models import Sum
-=======
-class ForecastSkuSerializer(serializers.ModelSerializer):
-    date = serializers.DateField(read_only=True, source='st_sku_date.date')
-
-    class Meta:
-        model = Forecast
-        fields = ('date', 'sales_units')
-
-    def get_forecast(self, obj):
-        last_forecast = Forecast.objects.aggregate(
-            Max('forecast_date')
-        )['forecast_date__max']
-        forecast = Forecast.objects.filter(
-            forecast_date=last_forecast,
-            st_sku_date__st_id=obj.st_sku_date.st_id,
-            st_sku_date__pr_sku_id=obj.st_sku_date.pr_sku_id
-        )
-        return ForecastSkuSerializer(forecast, many=True).data
-
-
-class FSkuSerializer(serializers.ModelSerializer):
-    sku = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='st_sku_date.pr_sku_id'
-    )
-    forecast = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Forecast
-        fields = ('sku', 'forecast')
-
-
-class SubcategorySerializer(serializers.ModelSerializer):
-    subcategory = serializers.CharField(
-        source='st_sku_date.pr_sku_id.pr_subcat_id'
-    )
-    sku = FSkuSerializer(read_only=True)
-
-    class Meta:
-        model = Forecast
-        fields = ('subcategory', 'sku')
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    category = serializers.CharField(
-        source='st_sku_date.pr_sku_id.pr_cat_id'
-    )
-    subcategory = SubcategorySerializer(read_only=True)
-
-    class Meta:
-        model = Forecast
-        fields = ('category', 'subcategory')
-
-
-class GroupSerializer(serializers.ModelSerializer):
-    group = serializers.CharField(
-        source='st_sku_date.pr_sku_id.pr_group_id'
-    )
-    category =CategorySerializer(read_only=True)
-
-    class Meta:
-        model = Forecast
-        fields = ('group', 'category')
-
-
-class FStoreSerializer(serializers.ModelSerializer):
-    store = serializers.PrimaryKeyRelatedField(
-        read_only=True, source='st_sku_date.st_id'
-    )
-    group = GroupSerializer(read_only=True)
-
-    class Meta:
-        model = Forecast
-        fields = ('store', 'group')
->>>>>>> 77c56fe8498f74051ecc9fe2c788229b2c3bb0f6
 
 
 class FForecastSerializer(serializers.ModelSerializer):
