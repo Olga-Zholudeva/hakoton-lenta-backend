@@ -252,6 +252,20 @@ class SalesDiffSerializer(serializers.ModelSerializer):
 
 
 class NewForecastSerializer(serializers.ModelSerializer):
+    store = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.st_id'
+    )
+    sku = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id'
+    )
+    date = serializers.DateField(
+        read_only=True,
+        source='st_sku_date.date'
+    )
+
     class Meta:
         model = Forecast
-        fields = ('st_sku_date', 'sales_units', 'forecast_date')
+        fields = ('store', 'sku', 'date',
+                  'st_sku_date', 'sales_units', 'forecast_date')
