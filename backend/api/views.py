@@ -213,3 +213,7 @@ class SalesDiffViewSet(
 class NewForecastViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Forecast.objects.all()
     serializer_class = NewForecastSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = ForecastFilter
+    filterset_fields = ['city', 'store', 'sku', 'group',
+                        'category', 'subcategory', 'date_from', 'date_to']

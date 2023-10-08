@@ -256,6 +256,18 @@ class NewForecastSerializer(serializers.ModelSerializer):
         read_only=True,
         source='st_sku_date.st_id'
     )
+    group = serializers.CharField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id.pr_group_id'
+    )
+    category = serializers.CharField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id.pr_cat_id'
+    )
+    subcategory = serializers.CharField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id.pr_subcat_id'
+    )
     sku = serializers.PrimaryKeyRelatedField(
         read_only=True,
         source='st_sku_date.pr_sku_id'
@@ -267,5 +279,5 @@ class NewForecastSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Forecast
-        fields = ('store', 'sku', 'date',
+        fields = ('store', 'sku', 'date', 'group', 'category', 'subcategory',
                   'st_sku_date', 'sales_units', 'forecast_date')
