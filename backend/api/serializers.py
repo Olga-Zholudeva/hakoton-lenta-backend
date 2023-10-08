@@ -251,16 +251,12 @@ class SalesDiffSerializer(serializers.ModelSerializer):
         return forecast_units
 
 
-class FSkuSerializer(serializers.ModelSerializer):
-    sku = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='st_sku_date.pr_sku_id'
-    )
-    forecast = serializers.SerializerMethodField()
+class ForecastSkuSerializer(serializers.ModelSerializer):
+    date = serializers.DateField(read_only=True, source='st_sku_date.date')
 
     class Meta:
         model = Forecast
-        fields = ('sku', 'forecast')
+        fields = ('date', 'sales_units')
 
     def get_forecast(self, obj):
         last_forecast = Forecast.objects.aggregate(
@@ -272,6 +268,18 @@ class FSkuSerializer(serializers.ModelSerializer):
             st_sku_date__pr_sku_id=obj.st_sku_date.pr_sku_id
         )
         return ForecastSkuSerializer(forecast, many=True).data
+
+
+class FSkuSerializer(serializers.ModelSerializer):
+    sku = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        source='st_sku_date.pr_sku_id'
+    )
+    forecast = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Forecast
+        fields = ('sku', 'forecast')
 
 
 class SubcategorySerializer(serializers.ModelSerializer):
