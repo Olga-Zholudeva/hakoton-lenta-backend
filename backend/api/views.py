@@ -14,7 +14,8 @@ from openpyxl.writer.excel import save_workbook
 from api.serializers import (SalesSerializer, SalesPostSerializer,
                              StoreSerializer, SkuSerializer,
                              ForecastSerializer, ForecastPostSerializer,
-                             SalesDiffSerializer)
+                             SalesDiffSerializer, SkuFilterSerializer,
+                             StoreFilterSerializer)
 from api.filters import SalesFilter, ForecastFilter, SalesDiffFilter
 from products.models import Sku, SalesFact, Store, Forecast, SalesDiff
 
@@ -37,6 +38,24 @@ class SkuViewSet(
     '''Обработчик для товаров'''
     queryset = Sku.objects.all()
     serializer_class = SkuSerializer
+
+
+class StoreFilterViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    '''Обработчик для магазинов'''
+    queryset = Store.objects.all()
+    serializer_class = StoreFilterSerializer
+
+
+class SkuFilterViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
+    '''Обработчик для товаров'''
+    queryset = Sku.objects.all()
+    serializer_class = SkuFilterSerializer
 
 
 class SalesViewSet(

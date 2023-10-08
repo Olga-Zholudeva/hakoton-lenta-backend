@@ -244,3 +244,37 @@ class SalesDiffSerializer(serializers.ModelSerializer):
         else:
             forecast_units = 0
         return forecast_units
+
+
+class SkuFilterSerializer(serializers.ModelSerializer):
+    pr_sku_id = serializers.CharField(source='pk')
+
+    class Meta:
+        model = Sku
+        fields = ('pr_sku_id', 'pr_group_id', 'pr_cat_id', 'pr_subcat_id', 'pr_uom_id')
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        for key in data:
+            if key != 'pr_sku_id':
+                queryset = Sku.objects.values_list(key, flat=True).distinct()
+                data[key] = list(queryset)
+        return data
+
+
+class StoreFilterSerializer(serializers.ModelSerializer):
+    st_id = serializers.CharField(source='pk')
+
+    class Meta:
+        model = Store
+        fields = ('st_id', 'st_city_id', 'st_division_code',
+                  'st_type_format_id', 'st_type_loc_id',
+                  'st_type_size_id', 'st_is_active')
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        for key in data:
+            if key != 'st_id':
+                queryset = Store.objects.values_list(key, flat=True).distinct()
+                data[key] = list(queryset)
+        return data
