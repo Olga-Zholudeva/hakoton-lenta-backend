@@ -288,9 +288,15 @@ class SubcategorySerializer(serializers.ModelSerializer):
     )
     sku = FSkuSerializer(read_only=True)
 
+<<<<<<< HEAD
     class Meta:
         model = Forecast
         fields = ('subcategory', 'sku')
+=======
+    def get_st_type_format_id(self, obj):
+        queryset = Store.objects.values_list('st_type_format_id', flat=True).distinct()
+        return list(queryset)
+>>>>>>> efd276e30e7ec4fcf00c2883d7cc6e4b2781e0cb
 
 
 class CategorySerializer(serializers.ModelSerializer):
