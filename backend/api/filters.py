@@ -48,7 +48,7 @@ class ForecastFilter(FilterSet):
         fields = ['city', 'store', 'sku', 'group', 'category', 'subcategory']
 
 
-class ForecastSkuFilter(filters.FilterSet):
+class ForecastSkuFilter(FilterSet):
     date_from = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='gte')
     date_to = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='lte')
 
