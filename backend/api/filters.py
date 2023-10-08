@@ -18,8 +18,10 @@ class SalesFilter(FilterSet):
     subcategory = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_subcat_id'
     )
-    date_from = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='gte')
-    date_to = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='lte')
+    date_from = filters.DateFilter(field_name='st_sku_date__date',
+                                   lookup_expr='gte')
+    date_to = filters.DateFilter(field_name='st_sku_date__date',
+                                 lookup_expr='lte')
 
     class Meta:
         model = SalesFact
@@ -42,19 +44,15 @@ class ForecastFilter(FilterSet):
     subcategory = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_subcat_id'
     )
+    date_from = filters.DateFilter(field_name='st_sku_date__date',
+                                   lookup_expr='gte')
+    date_to = filters.DateFilter(field_name='st_sku_date__date',
+                                 lookup_expr='lte')
 
     class Meta:
         model = Forecast
-        fields = ['city', 'store', 'sku', 'group', 'category', 'subcategory']
-
-
-class ForecastSkuFilter(FilterSet):
-    date_from = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='gte')
-    date_to = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='lte')
-
-    class Meta:
-        model = Forecast
-        fields = ['date_from', 'date_to']
+        fields = ['city', 'store', 'sku', 'group', 'category', 'subcategory',
+                  'date_from', 'date_to']
 
 
 class SalesDiffFilter(FilterSet):
@@ -72,8 +70,10 @@ class SalesDiffFilter(FilterSet):
     subcategory = filters.CharFilter(
         field_name='st_sku_date__pr_sku_id__pr_subcat_id'
     )
-    date_from = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='gte')
-    date_to = filters.DateFilter(field_name='st_sku_date__date', lookup_expr='lte')
+    date_from = filters.DateFilter(field_name='st_sku_date__date',
+                                   lookup_expr='gte')
+    date_to = filters.DateFilter(field_name='st_sku_date__date',
+                                 lookup_expr='lte')
 
     class Meta:
         model = SalesDiff

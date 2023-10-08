@@ -15,8 +15,7 @@ from api.serializers import (SalesSerializer, SalesPostSerializer,
                              StoreSerializer, SkuSerializer,
                              ForecastSerializer, ForecastPostSerializer,
                              SalesDiffSerializer)
-from api.filters import (SalesFilter, ForecastFilter, SalesDiffFilter,
-                         ForecastSkuFilter)
+from api.filters import SalesFilter, ForecastFilter, SalesDiffFilter
 from products.models import Sku, SalesFact, Store, Forecast, SalesDiff
 
 
@@ -209,42 +208,3 @@ class SalesDiffViewSet(
         else:
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
-
-
-class NewForecastViewSet(
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet
-):
-    queryset = Forecast.objects.all()
-    serializer_class = ForecastSerializer
-    filterset_class = ForecastFilter
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        if self.action == 'list':
-            context['forecast_sku_filterset'] = ForecastSkuFilter(
-                self.request.GET,
-                queryset=Forecast.objects.all()
-            )
-        return context
-
-    def list(self, request, *args, **kwargs):
-        self.filterset = self.get_filterset()
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer_context = self.get_serializer_context()
-        if 'forecast_sku_filterset' in serializer_context:
-            serializer_context['forecast_sku_filterset'].qs = queryset
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(
-                page,
-                context=serializer_context,
-                many=True
-            )
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(
-            queryset,
-            context=serializer_context,
-            many=True
-        )
-        return Response(serializer.data)
