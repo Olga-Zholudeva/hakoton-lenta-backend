@@ -280,4 +280,4 @@ class NewForecastSerializer(serializers.ModelSerializer):
     class Meta:
         model = Forecast
         fields = ('store', 'sku', 'date', 'group', 'category', 'subcategory',
-                  'st_sku_date', 'sales_units', 'forecast_date')
+                  'sales_units', 'forecast_date')

@@ -48,11 +48,12 @@ class ForecastFilter(FilterSet):
                                    lookup_expr='gte')
     date_to = filters.DateFilter(field_name='st_sku_date__date',
                                  lookup_expr='lte')
+    forecast_date = filters.DateFilter(field_name='forecast_date')
 
     class Meta:
         model = Forecast
         fields = ['city', 'store', 'sku', 'group', 'category', 'subcategory',
-                  'date_from', 'date_to']
+                  'date_from', 'date_to', 'forecast_date']
 
 
 class SalesDiffFilter(FilterSet):
