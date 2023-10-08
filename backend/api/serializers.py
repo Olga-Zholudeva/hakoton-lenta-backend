@@ -47,7 +47,7 @@ class StoreSerializer(serializers.ModelSerializer):
                   'st_type_format_id', 'st_type_loc_id', 'st_type_size_id',
                   'st_is_active')
 
-'''
+
 class ForecastSkuSerializer(serializers.ModelSerializer):
     date = serializers.DateField(read_only=True, source='st_sku_date.date')
 
@@ -92,7 +92,7 @@ class ForecastSerializer(serializers.ModelSerializer):
             st_sku_date__pr_sku_id=obj.st_sku_date.pr_sku_id
         )
         return ForecastSkuSerializer(forecast, many=True).data
-'''
+
 
 class ForecastPostSerializer(serializers.ModelSerializer):
     '''Сериализатор для загрузки прогноза продаж'''
@@ -251,14 +251,6 @@ class SalesDiffSerializer(serializers.ModelSerializer):
         return forecast_units
 
 
-class ForecastSkuSerializer(serializers.ModelSerializer):
-    date = serializers.DateField(read_only=True, source='st_sku_date.date')
-
-    class Meta:
-        model = Forecast
-        fields = ('date', 'sales_units')
-
-
 class FSkuSerializer(serializers.ModelSerializer):
     sku = serializers.PrimaryKeyRelatedField(
         read_only=True,
@@ -288,15 +280,9 @@ class SubcategorySerializer(serializers.ModelSerializer):
     )
     sku = FSkuSerializer(read_only=True)
 
-<<<<<<< HEAD
     class Meta:
         model = Forecast
         fields = ('subcategory', 'sku')
-=======
-    def get_st_type_format_id(self, obj):
-        queryset = Store.objects.values_list('st_type_format_id', flat=True).distinct()
-        return list(queryset)
->>>>>>> efd276e30e7ec4fcf00c2883d7cc6e4b2781e0cb
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -332,8 +318,8 @@ class FStoreSerializer(serializers.ModelSerializer):
         fields = ('store', 'group')
 
 
-class ForecastSerializer(serializers.ModelSerializer):
-    '''Сериализатор для вывода прогноза продаж'''
+class FForecastSerializer(serializers.ModelSerializer):
+    '''Сериализатор для вывода прогноза продаж2'''
     city = serializers.CharField(
         source='st_sku_date.st_id.st_city_id'
     )
