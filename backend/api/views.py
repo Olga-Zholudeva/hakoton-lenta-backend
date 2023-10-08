@@ -45,10 +45,6 @@ class NewForecastViewSet(
 ):
     queryset = Sales.objects.all()
     serializer_class = FSalesSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filterset_class = SalesFilter
-    filterset_fields = ['city', 'store', 'sku', 'group',
-                        'category', 'subcategory', 'date_from', 'date_to']
 
 
 class SalesViewSet(
