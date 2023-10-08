@@ -313,9 +313,9 @@ class FSkuSerializer(serializers.ModelSerializer):
 
 class FSalesSerializer(serializers.ModelSerializer):
     '''Сериализатор для вывода данных продаж'''
-    city = serializers.CharField(source='st_id.st_city_id')
+    city = serializers.CharField(source='st_sku_date.st_id.st_city_id')
     sku = FSkuSerializer()
 
     class Meta:
-        model = Sales
+        model = Forecast
         fields = ('city', 'sku')
