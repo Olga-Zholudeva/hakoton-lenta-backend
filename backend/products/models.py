@@ -74,7 +74,7 @@ class Sales(models.Model):
     date = models.DateField(verbose_name='дата продаж',)
 
     class Meta:
-        ordering = ('-date',)
+        ordering = ('date',)
 
 
 class SalesFact(models.Model):
