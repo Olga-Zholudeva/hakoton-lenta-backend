@@ -213,36 +213,3 @@ class SalesDiffViewSet(
 class NewForecastViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Forecast.objects.all()
     serializer_class = NewForecastSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filterset_class = ForecastFilter
-    filterset_fields = ['city', 'store', 'sku', 'group',
-                        'category', 'subcategory', 'date_from', 'date_to']
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        if 'format' in request.GET and request.GET['format'].lower() == 'excel':
-            serializer = self.get_serializer(queryset, many=True)
-            workbook = Workbook()
-            worksheet = workbook.active
-
-            headers = serializer.fields.keys()
-            for col_num, header in enumerate(headers, 1):
-                column_letter = get_column_letter(col_num)
-                worksheet.cell(row=1, column=col_num, value=header)
-
-            for row_num, row_data in enumerate(serializer.data, 2):
-                for col_num, field_name in enumerate(headers, 1):
-                    column_letter = get_column_letter(col_num)
-                    cell_value = row_data[field_name]
-                    worksheet.cell(row=row_num, column=col_num,
-                                   value=cell_value)
-
-            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            response['Content-Disposition'] = 'attachment; filename="forecast.xlsx"'
-            response.write(save_workbook(workbook))
-            return response
-
-        else:
-            serializer = self.get_serializer(queryset, many=True)
-            return Response(serializer.data)
