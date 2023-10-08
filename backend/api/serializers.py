@@ -47,7 +47,7 @@ class StoreSerializer(serializers.ModelSerializer):
                   'st_type_format_id', 'st_type_loc_id', 'st_type_size_id',
                   'st_is_active')
 
-'''
+
 class ForecastSkuSerializer(serializers.ModelSerializer):
     date = serializers.DateField(read_only=True, source='st_sku_date.date')
 
@@ -92,7 +92,7 @@ class ForecastSerializer(serializers.ModelSerializer):
             st_sku_date__pr_sku_id=obj.st_sku_date.pr_sku_id
         )
         return ForecastSkuSerializer(forecast, many=True).data
-'''
+
 
 class ForecastPostSerializer(serializers.ModelSerializer):
     '''Сериализатор для загрузки прогноза продаж'''
@@ -326,8 +326,8 @@ class FStoreSerializer(serializers.ModelSerializer):
         fields = ('store', 'group')
 
 
-class ForecastSerializer(serializers.ModelSerializer):
-    '''Сериализатор для вывода прогноза продаж'''
+class FForecastSerializer(serializers.ModelSerializer):
+    '''Сериализатор для вывода прогноза продаж2'''
     city = serializers.CharField(
         source='st_sku_date.st_id.st_city_id'
     )
