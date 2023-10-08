@@ -251,80 +251,71 @@ class SalesDiffSerializer(serializers.ModelSerializer):
         return forecast_units
 
 
-class FSkuSerializer(serializers.ModelSerializer):
-    sku = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        source='st_sku_date.pr_sku_id'
-    )
-    forecast = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Forecast
-        fields = ('sku', 'forecast')
-
-    def get_forecast(self, obj):
-        last_forecast = Forecast.objects.aggregate(
-            Max('forecast_date')
-        )['forecast_date__max']
-        forecast = Forecast.objects.filter(
-            forecast_date=last_forecast,
-            st_sku_date__st_id=obj.st_sku_date.st_id,
-            st_sku_date__pr_sku_id=obj.st_sku_date.pr_sku_id
-        )
-        return ForecastSkuSerializer(forecast, many=True).data
-
-
-class SubcategorySerializer(serializers.ModelSerializer):
-    subcategory = serializers.CharField(
-        source='st_sku_date.pr_sku_id.pr_subcat_id'
-    )
-    sku = FSkuSerializer(read_only=True)
-
-    class Meta:
-        model = Forecast
-        fields = ('subcategory', 'sku')
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    category = serializers.CharField(
-        source='st_sku_date.pr_sku_id.pr_cat_id'
-    )
-    subcategory = SubcategorySerializer(read_only=True)
-
-    class Meta:
-        model = Forecast
-        fields = ('category', 'subcategory')
-
-
-class GroupSerializer(serializers.ModelSerializer):
-    group = serializers.CharField(
-        source='st_sku_date.pr_sku_id.pr_group_id'
-    )
-    category =CategorySerializer(read_only=True)
-
-    class Meta:
-        model = Forecast
-        fields = ('group', 'category')
-
-
-class FStoreSerializer(serializers.ModelSerializer):
-    store = serializers.PrimaryKeyRelatedField(
-        read_only=True, source='st_sku_date.st_id'
-    )
-    group = GroupSerializer(read_only=True)
-
-    class Meta:
-        model = Forecast
-        fields = ('store', 'group')
+from itertools import groupby
+from django.db.models import Sum
 
 
 class FForecastSerializer(serializers.ModelSerializer):
-    '''Сериализатор для вывода прогноза продаж2'''
-    city = serializers.CharField(
-        source='st_sku_date.st_id.st_city_id'
-    )
-    store = FStoreSerializer(read_only=True)
+    '''Сериализатор для вывода данных прогнозов'''
+    sales_units = serializers.DecimalField(max_digits=6, decimal_places=1)
 
     class Meta:
         model = Forecast
-        fields = ('city', 'store')
+        fields = ('sales_units', 'forecast_date')
+
+
+class FSkuSerializer(serializers.ModelSerializer):
+    '''Сериализатор для вывода данных товаров'''
+    sku = serializers.CharField(source='pr_sku_id')
+    sales = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Sku
+        fields = ('sku', 'sales')
+
+    def get_sales(self, obj):
+        sales = Sales.objects.filter(pr_sku_id=obj.pr_sku_id).values(
+            'st_id__st_city_id',
+            'pr_sku_id__pr_group_id',
+            'pr_sku_id__pr_cat_id',
+            'pr_sku_id__pr_subcat_id',
+            'pr_sku_id',
+        ).annotate(
+            sales_units=Sum('forecast__sales_units')
+        )
+        sales_data = []
+        for key, group in groupby(sales, key=lambda x: x['st_id__st_city_id']):
+            city_data = {
+                'city': key,
+                'groups': [],
+            }
+            for key, group in groupby(group, key=lambda x: x['pr_sku_id__pr_group_id']):
+                group_data = {
+                    'group': key,
+                    'categories': [],
+                }
+                for key, group in groupby(group, key=lambda x: x['pr_sku_id__pr_cat_id']):
+                    cat_data = {
+                        'category': key,
+                        'subcategories': [],
+                    }
+                    for key, group in groupby(group, key=lambda x: x['pr_sku_id__pr_subcat_id']):
+                        subcat_data = {
+                            'subcategory': key,
+                            'sales': FForecastSerializer(list(group), many=True).data,
+                        }
+                        cat_data['subcategories'].append(subcat_data)
+                    group_data['categories'].append(cat_data)
+                city_data['groups'].append(group_data)
+            sales_data.append(city_data)
+        return sales_data
+
+
+class FSalesSerializer(serializers.ModelSerializer):
+    '''Сериализатор для вывода данных продаж'''
+    city = serializers.CharField(source='st_id.st_city_id')
+    sku = FSkuSerializer()
+
+    class Meta:
+        model = Sales
+        fields = ('city', 'sku')
