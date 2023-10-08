@@ -153,8 +153,19 @@ class SalesDiff(models.Model):
         ordering = ('st_sku_date',)
 
     def save(self, *args, **kwargs):
-        sales_fact = SalesFact.objects.filter(st_sku_date=self.st_sku_date).aggregate(total_sales_units=Coalesce(Sum('sales_units'), 0, output_field=models.DecimalField(max_digits=6, decimal_places=1)))['total_sales_units']
-        forecast = Forecast.objects.filter(st_sku_date=self.st_sku_date).first()
+        sales_fact = SalesFact.objects.filter(
+            st_sku_date=self.st_sku_date
+        ).aggregate(
+            total_sales_units=Coalesce(
+                Sum('sales_units'),
+                0,
+                output_field=models.DecimalField(max_digits=6,
+                                                 decimal_places=1)
+            )
+        )['total_sales_units']
+        forecast = Forecast.objects.filter(
+            st_sku_date=self.st_sku_date
+        ).first()
         if forecast:
             diff_sales_units = sales_fact - forecast.sales_units
             wape = (Abs(diff_sales_units) / forecast.sales_units) * WAPE
