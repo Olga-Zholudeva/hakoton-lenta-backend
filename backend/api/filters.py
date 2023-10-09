@@ -33,8 +33,13 @@ class SalesFilter(FilterSet):
     date_to = filters.DateFilter(field_name='st_sku_date__date',
                                  lookup_expr='lte')
 
+    class Meta:
+        model = Sales
+        fields = ['city', 'store', 'sku', 'group',
+                  'category', 'subcategory', 'date_from', 'date_to']
 
-class SalesFilter(SalesFilter):
+
+class SalesFactFilter(SalesFilter):
     class Meta:
         model = SalesFact
         fields = ['city', 'store', 'sku', 'group',
