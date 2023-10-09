@@ -12,7 +12,7 @@ logger = setup_logger()
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        with open('products/data/sales_df_train.csv', encoding='utf-8') as f:
+        with open('products/data/sales_df_train3.csv', encoding='utf-8') as f:
             logger.info('старт загрузки данных')
             reader = csv.reader(f)
             next(reader)
