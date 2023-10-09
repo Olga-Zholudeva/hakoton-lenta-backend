@@ -74,7 +74,7 @@ class ForecastViewSet(
         if self.request.method in SAFE_METHODS:
             return ForecastSerializer
         return ForecastPostSerializer
-    
+
     @action(methods=["GET",], detail=False,
             serializer_class=ForecastSerializer)
     def dowload(self, request, *args, **kwargs):
