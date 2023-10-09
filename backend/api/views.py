@@ -91,7 +91,7 @@ class ForecastViewSet(
                 st_sku_date__st_id=query_params['store'],
                 st_sku_date__pr_sku_id__pr_group_id=query_params['group'],
                 st_sku_date__pr_sku_id__pr_cat_id=query_params['category'],
-                st_sku_date__pr_sku_id__pr_subcat_id=query_params['subcategory'],
+                st_sku_date__pr_sku_id__pr_subcat_id=query_params['subcategory'],  # noqa
                 st_sku_date__pr_sku_id=query_params['sku'],
                 st_sku_date__date=query_params['date_from'],
                 date_to=query_params['date_to']
@@ -102,7 +102,7 @@ class ForecastViewSet(
                 st_sku_date__st_id=query_params['store'],
                 st_sku_date__pr_sku_id__pr_group_id=query_params['group'],
                 st_sku_date__pr_sku_id__pr_cat_id=query_params['category'],
-                st_sku_date__pr_sku_id__pr_subcat_id=query_params['subcategory'],
+                st_sku_date__pr_sku_id__pr_subcat_id=query_params['subcategory'],  # noqa
                 st_sku_date__pr_sku_id=query_params['sku'],
                 st_sku_date__date=query_params['date_from'],
             )
@@ -112,7 +112,7 @@ class ForecastViewSet(
                 st_sku_date__st_id=query_params['store'],
                 st_sku_date__pr_sku_id__pr_group_id=query_params['group'],
                 st_sku_date__pr_sku_id__pr_cat_id=query_params['category'],
-                st_sku_date__pr_sku_id__pr_subcat_id=query_params['subcategory'],
+                st_sku_date__pr_sku_id__pr_subcat_id=query_params['subcategory'],  # noqa
                 st_sku_date__pr_sku_id=query_params['sku'],
             )
         elif 'city' and 'store' and 'group' and 'category' and 'subcategory' in query_params:  # noqa
@@ -144,7 +144,7 @@ class ForecastViewSet(
         elif 'city' in query_params:
             queryset = Forecast.objects.filter(
                 st_sku_date__st_id__st_city_id=query_params['city'],
-            ) 
+            )
         workbook = Workbook()
         worksheet = workbook.active
 
@@ -198,7 +198,7 @@ class SalesDiffViewSet(
 
             for row_num, row_data in enumerate(serializer.data, 2):
                 for col_num, field_name in enumerate(headers, 1):
-                    column_letter = get_column_letter(col_num)
+                    column_letter = get_column_letter(col_num)  # noqa
                     cell_value = row_data[field_name]
                     worksheet.cell(row=row_num, column=col_num,
                                    value=cell_value)
