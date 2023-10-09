@@ -42,8 +42,6 @@ class SalesFilter(SalesFilter):
 
 
 class ForecastFilter(SalesFilter):
-    forecast_date = filters.DateFilter(field_name='forecast_date')
-
     class Meta:
         model = Forecast
         fields = ['city', 'store', 'sku', 'group', 'category', 'subcategory',
