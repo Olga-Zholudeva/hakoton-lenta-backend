@@ -282,10 +282,10 @@ class NewForecastSerializer(serializers.ModelSerializer):
 
     def get_forecast_date(self, obj):
         return Forecast.objects.filter(
-            st_sku_date=obj.st_sku_date
+            st_sku_date=obj
         ).first().forecast_date
 
     def get_sales_units(self, obj):
         return Forecast.objects.filter(
-            st_sku_date=obj.st_sku_date
+            st_sku_date=obj
         ).first().sales_units
