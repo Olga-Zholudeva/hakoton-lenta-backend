@@ -15,7 +15,7 @@ from api.serializers import (SalesSerializer, SalesPostSerializer,
                              StoreSerializer, SkuSerializer,
                              ForecastSerializer, ForecastPostSerializer,
                              SalesDiffSerializer, NewForecastSerializer)
-from api.filters import SalesFilter, ForecastFilter, SalesDiffFilter
+from api.filters import SalesFilter, ForecastFilter, SalesDiffFilter, SalesFactFilter
 from products.models import Sku, SalesFact, Store, Forecast, SalesDiff
 
 
@@ -47,7 +47,7 @@ class SalesViewSet(
     '''Обработчик для фактических продаж'''
     queryset = SalesFact.objects.all()
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = SalesFilter
+    filterset_class = SalesFactFilter
     filterset_fields = ['city', 'store', 'sku', 'group',
                         'category', 'subcategory', 'date_from', 'date_to']
 
@@ -211,9 +211,9 @@ class SalesDiffViewSet(
 
 
 class NewForecastViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = Forecast.objects.all()
+    queryset = Sales.objects.filter(f_sales_store_date__forecast__isnull=False)
     serializer_class = NewForecastSerializer
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = ForecastFilter
+    filterset_class = SalesFilter
     filterset_fields = ['city', 'store', 'sku', 'group', 'category',
                         'subcategory', 'date_from', 'date_to', 'forecast_date']
