@@ -1,6 +1,6 @@
 from django_filters.rest_framework import FilterSet, filters
 
-from products.models import SalesFact, Forecast, SalesDiff, Store, Sku
+from products.models import SalesFact, Forecast, SalesDiff, Store, Sku, Sales
 
 
 class SalesFilter(FilterSet):
