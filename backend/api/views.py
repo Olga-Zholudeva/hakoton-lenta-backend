@@ -16,7 +16,7 @@ from api.serializers import (SalesSerializer, SalesPostSerializer,
                              ForecastSerializer, ForecastPostSerializer,
                              SalesDiffSerializer, NewForecastSerializer)
 from api.filters import SalesFilter, ForecastFilter, SalesDiffFilter, SalesFactFilter
-from products.models import Sku, SalesFact, Store, Forecast, SalesDiff
+from products.models import Sku, SalesFact, Store, Forecast, SalesDiff, Sales
 
 
 class StoreViewSet(
