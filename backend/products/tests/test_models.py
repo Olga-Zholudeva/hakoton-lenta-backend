@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from ..models import SalesFact, Sales, Sku, Store, Sales, Forecast, SalesDiff
 
 
