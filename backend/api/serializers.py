@@ -272,10 +272,6 @@ class NewForecastSerializer(serializers.ModelSerializer):
         read_only=True,
         source='pr_sku_id'
     )
-    date = serializers.DateField(
-        read_only=True,
-        source='date'
-    )
     forecast_date = serializers.SerializerMethodField()
     sales_units = serializers.SerializerMethodField()
 
