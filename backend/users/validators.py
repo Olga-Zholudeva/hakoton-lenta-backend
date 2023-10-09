@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext as _, ngettext
+from django.utils.translation import gettext as _, ngettext  # noqa
 
 
 def validate_username(data):
@@ -19,8 +19,8 @@ class MaximumLengthValidator:
         if len(password) > self.max_length:
             raise ValidationError(
                 ngettext(
-                    "This password is too long. It must contain not more %(max_length)d character.",
-                    "This password is too long. It must contain not more %(max_length)d characters.",
+                    "This password is too long. It must contain not more %(max_length)d character.",  # noqa
+                    "This password is too long. It must contain not more %(max_length)d characters.",  # noqa
                     self.max_length
                 ),
                 code='password_too_long',
